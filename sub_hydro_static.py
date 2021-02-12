@@ -3,13 +3,13 @@ import numpy as np
 
 
 class FloaterParameters:
-    def __init__(self, x, y):
+    def __init__(self, x, y, dia):
         # Free Variables
         self.x_space = x
         self.y_space = y
 
         # Currently fixed variables
-        self.dia_column = 20
+        self.dia_column = dia
         self.dia_heave = 20
         self.heave_height = 2
 

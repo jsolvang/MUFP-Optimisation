@@ -65,12 +65,15 @@ class Mass:
         r_top_outter = r_bot_outter - t_bot
         r_out = 1.935
         r_in = r_out - t_top
-        H = 87.6
+        tower_length = np.sqrt(
+            np.square(np.divide(floater.hub_space / 2 - floater.x_space, 2)) + np.square(floater.hub_height))
 
         self.tower = 347460
 
-        tower_volume_out = np.divide(np.pi, 3) * H * (np.square(r_bot_outter) + np.square(r_out) + r_bot_outter * r_out)
-        tower_volume_in = np.divide(np.pi, 3) * H * (np.square(r_top_outter) + np.square(r_in) + r_top_outter * r_in)
+        tower_volume_out = np.divide(np.pi, 3) * tower_length * (
+                    np.square(r_bot_outter) + np.square(r_out) + r_bot_outter * r_out)
+        tower_volume_in = np.divide(np.pi, 3) * tower_length * (
+                    np.square(r_top_outter) + np.square(r_in) + r_top_outter * r_in)
         self.tower = (tower_volume_out - tower_volume_in) * rho.steel
 
         # Column mass
@@ -111,9 +114,9 @@ class GeneralisedCoordinateSystem:
                      mass.hub + mass.rotor + mass.nacelle]
 
         self.towerL = ["Left Tower", -floater.x_space, -np.divide(floater.y_space + floater.hub_space, 2) / 2,
-                       floater.hub_height / 1.3, mass.tower]
+                       floater.hub_height / 2.3, mass.tower]
         self.towerR = ["Right Tower", -floater.x_space, np.divide(floater.y_space + floater.hub_space, 2) / 2,
-                       floater.hub_height / 1.3, mass.tower]
+                       floater.hub_height / 2.3, mass.tower]
 
         self.buoy_columnfront = ["Front Column Buoy", 0, 0,
                                  - 1 / 2 * (floater.draft - floater.heave_height), buoy.column]
@@ -219,9 +222,16 @@ class GeneralisedCoordinateSystem:
         self.rog_df['y'] = self.mass_df['y'] - self.COM[1]
         self.rog_df['z'] = self.mass_df['z'] - self.COM[2]
         self.rog_df['Mass [kg]'] = self.mass_df['Mass [kg]']
-        self.rog_df['I'] = self.rog_df['Mass [kg]'] * np.square(
-            np.sqrt(np.square(self.rog_df['x']) + np.square(self.rog_df['y']) + np.square(self.rog_df['z'])))
-        self.RoG = np.sqrt(np.sum(self.rog_df['I']) / np.sum(self.mass_df['Mass [kg]']))
+        self.rog_df['I_x'] = self.rog_df['Mass [kg]'] * np.square(
+            np.sqrt(np.square(self.rog_df['y']) + np.square(self.rog_df['z'])))
+        self.rog_df['I_y'] = self.rog_df['Mass [kg]'] * np.square(
+            np.sqrt(np.square(self.rog_df['x']) + np.square(self.rog_df['z'])))
+        self.rog_df['I_z'] = self.rog_df['Mass [kg]'] * np.square(
+            np.sqrt(np.square(self.rog_df['x']) + np.square(self.rog_df['y'])))
+
+        self.RoG = [np.sqrt(np.sum(self.rog_df['I_x']) / np.sum(self.mass_df['Mass [kg]'])),
+                    np.sqrt(np.sum(self.rog_df['I_y']) / np.sum(self.mass_df['Mass [kg]'])),
+                    np.sqrt(np.sum(self.rog_df['I_z']) / np.sum(self.mass_df['Mass [kg]']))]
 
 
 def _ballast_allocation(coord, mass, floater):

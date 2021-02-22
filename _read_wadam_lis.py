@@ -9,6 +9,77 @@ class ReadWadamLis:
 
     def _extract_results(self):
         hydroD_results = open(self.path, 'r').readlines()
+
+        ii = 1
+        found = 0
+        self.mass_matrix = np.zeros(shape=(6, 6))
+
+        while found == 0:
+            k = hydroD_results[ii].find('     MASS PROPERTIES AND STRUCTURAL DATA:\n')
+            ii += 1
+            if k != -1:
+                found = 1
+                self.mass = float(hydroD_results[ii+2].split()[6])
+                self.COG = [float(hydroD_results[ii+4].split()[5]), float(hydroD_results[ii+5].split()[2]), float(hydroD_results[ii+6].split()[2])]
+                self.RoG = [float(hydroD_results[ii+7].split()[6]), float(hydroD_results[ii+8].split()[6]), float(hydroD_results[ii+9].split()[6])]
+                self.CFM = [float(hydroD_results[ii+10].split()[4].replace("=","")), float(hydroD_results[ii+11].split()[5]), float(hydroD_results[ii+12].split()[5])]
+
+        ii = 1
+        found = 0
+
+        self.mass_matrix[0, 0] = self.mass
+        self.mass_matrix[1, 1] = self.mass
+        self.mass_matrix[2, 2] = self.mass
+        self.mass_matrix[3, 3] = self.mass*np.square(self.RoG[0])
+        self.mass_matrix[4, 4] = self.mass*np.square(self.RoG[1])
+        self.mass_matrix[5, 5] = self.mass*np.square(self.RoG[2])
+
+        self.mass_matrix[3, 4] = -self.mass * self.CFM[0]
+        self.mass_matrix[4, 3] = -self.mass * self.CFM[0]
+
+        self.mass_matrix[3, 5] = -self.mass * self.CFM[1]
+        self.mass_matrix[5, 3] = -self.mass * self.CFM[1]
+
+        self.mass_matrix[0, 4] = self.mass*self.COG[2]
+        self.mass_matrix[4, 0] = self.mass*self.COG[2]
+
+        self.mass_matrix[1, 3] = -self.mass*self.COG[2]
+        self.mass_matrix[3, 1] = -self.mass*self.COG[2]
+
+        self.mass_matrix[1, 5] = self.mass*self.COG[0]
+        self.mass_matrix[5, 1] = self.mass*self.COG[0]
+
+        self.mass_matrix[2, 4] = -self.mass*self.COG[0]
+        self.mass_matrix[4, 2] = -self.mass*self.COG[0]
+
+
+
+        self.stiffness_matrix =  np.zeros(shape=(6, 6))
+
+        while found == 0:
+            k = hydroD_results[ii].find('     HYDROSTATIC DATA:\n')
+            ii += 1
+            if k != -1:
+                found = 1
+                print(ii)
+                self.displaced_volume = float(hydroD_results[ii+3].split()[6])
+                self.WPA = float(hydroD_results[ii+5].split()[5])
+                self.COB = [float(hydroD_results[ii+7].split()[5]), float(hydroD_results[ii+8].split()[2]),
+                            float(hydroD_results[ii+9].split()[1].replace("=", ""))]
+
+                self.meta_centric_height_transverse = float(hydroD_results[ii+10].split()[5])
+                self.meta_centric_height_longitudinal = float(hydroD_results[ii+11].split()[5])
+
+                self.stiffness_matrix[2, 2] = float(hydroD_results[ii+12].split()[5])
+                self.stiffness_matrix[2, 3] = float(hydroD_results[ii+13].split()[5])
+                self.stiffness_matrix[2, 4] = float(hydroD_results[ii+14].split()[4].replace("=", ""))
+                self.stiffness_matrix[4, 2] = self.stiffness_matrix[2, 4]
+                self.stiffness_matrix[3, 3] = float(hydroD_results[ii+15].split()[5])
+                self.stiffness_matrix[4, 4] = float(hydroD_results[ii+16].split()[5])
+                self.stiffness_matrix[3, 4] = float(hydroD_results[ii+17].split()[5])
+                self.stiffness_matrix[3, 5] = float(hydroD_results[ii+18].split()[5])
+                self.stiffness_matrix[4, 5] = float(hydroD_results[ii+19].split()[5])
+
         ii = 1
         found = 0
 

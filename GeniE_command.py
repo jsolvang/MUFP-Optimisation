@@ -53,16 +53,16 @@ class CompHydroCoefficient:
                     file.write(lines[kk])
 
         # Run GeniE
-        subprocess.run(
-            self.GeniE_path + " " + self.GeniE_database + " /new " + self.GeniE_license + " /com=" + self.GeniE_JScommand + " /exit")
+        #subprocess.run(
+        #    self.GeniE_path + " " + self.GeniE_database + " /new " + self.GeniE_license + " /com=" + self.GeniE_JScommand + " /exit")
 
-        os.remove(self.GeniE_database)
+        #os.remove(self.GeniE_database)
 
         # Run HydroD
-        subprocess.run(
-             self.HydroD_path + " " + self.HydroD_database + " /new " + self.HydroD_license + " /com=" + self.HydroD_JScommand + " /exit")
+        #subprocess.run(
+             #self.HydroD_path + " " + self.HydroD_database + " /new " + self.HydroD_license + " /com=" + self.HydroD_JScommand + " /exit")
 
-        os.remove(self.HydroD_database)
+        #os.remove(self.HydroD_database)
 
 
 

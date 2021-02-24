@@ -26,31 +26,3 @@ class FloaterParameters:
         self.mass_matrix = np.zeros(shape=(6, 6))
         self.stiffness_matrix = np.zeros(shape=(6, 6))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
-    mufp = FloaterParameters(150, 50)
-    rho = Density()
-    csa = CrossSectionalArea(mufp)
-    buoy = Buoy(mufp, csa, rho)
-    mass = Mass(mufp, csa, buoy, rho)
-    coord = GeneralisedCoordinateSystem(mufp, csa, mass, rho, buoy)

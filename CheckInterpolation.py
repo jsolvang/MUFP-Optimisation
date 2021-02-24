@@ -3,7 +3,7 @@ import subprocess
 import os
 import matplotlib.pyplot as plt
 import pickle
-
+#legend_F = ['|$X_1$|', '|$X_2$|', '|$X_3$|', '|$X_4$|', '|$X_5$|', '|$X_6$|']
 
 class InterpolateParameters:
     def __init__(self, pull, interp_at):
@@ -65,16 +65,16 @@ class InterpolateParameters:
         fig, axs = plt.subplots(6, 1)
         for ii in np.linspace(0, 5, 6).astype(int):
             axs[ii].plot(results[0].wave_disc[:, 4], results[0].ADDEDMASS[:, ii, ii], '-+m',
-                         label="sim_x_%f_y_%f_D%f" % (pull[0, 0], pull[0, 1], pull[0, 2]),
+                         label="HydroD Sim (x=%d y=%d D=%d)" % (pull[0, 0], pull[0, 1], pull[0, 2]),
                          linewidth=1, markersize=5)
             axs[ii].plot(results[1].wave_disc[:, 4], results[1].ADDEDMASS[:, ii, ii], '-or',
-                         label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[1, 2]),
+                         label="HydroD Sim (x=%d y=%d D=%d)" % (pull[1, 0], pull[1, 1], pull[1, 2]),
                          linewidth=2, markersize=5)
             axs[ii].plot(results[2].wave_disc[:, 4], results[2].ADDEDMASS[:, ii, ii], '-og',
-                         label="sim_x_%f_y_%f_D%f" % (pull[2, 0], pull[2, 1], pull[2, 2]),
+                         label="HydroD Sim (x=%d y=%d D=%d)" % (pull[2, 0], pull[2, 1], pull[2, 2]),
                          linewidth=1, markersize=5)
             axs[ii].plot(results[1].wave_disc[:, 4], self.ADDEDMASS[:, ii, ii], '--ob',
-                         label="Interpolated at %f" % interp_at[1],
+                         label="Interpolated at %d" % interp_at[1],
                          linewidth=2, markersize=5)
             axs[ii].legend(loc="upper right")
             axs[ii].set(ylabel=ADDEDMASS_yaxis[ii])
@@ -86,10 +86,10 @@ class InterpolateParameters:
         fig, axs = plt.subplots(6, 1)
         for ii in np.linspace(0, 5, 6).astype(int):
             axs[ii].plot(results[1].wave_disc[:, 4], results[1].ADDEDMASS[:, ii, ii], '-or',
-                         label="sim_x_%f_y_%f_D%f" % (pull[0, 1], pull[1, 1], pull[2, 1]),
+                         label="HydroD Sim (x=%d y=%d D=%d)" % (pull[0, 1], pull[1, 1], pull[2, 1]),
                          linewidth=2, markersize=5)
             axs[ii].plot(results[1].wave_disc[:, 4], self.ADDEDMASS[:, ii, ii], '--ob',
-                         label="Interpolated at %f" % interp_at[1],
+                         label="Interpolated at %d" % interp_at[1],
                          linewidth=2, markersize=5)
             axs[ii].legend(loc="upper right")
             axs[ii].set(ylabel=ADDEDMASS_yaxis[ii])
@@ -108,16 +108,16 @@ class InterpolateParameters:
         fig, axs = plt.subplots(6, 1)
         for ii in np.linspace(0, 5, 6).astype(int):
             axs[ii].plot(results[0].wave_disc[:, 4], results[0].DAMPING[:, ii, ii], '-+m',
-                         label="sim_x_%f_y_%f_D%f" % (pull[0, 0], pull[0, 1], pull[0, 2]),
+                         label="HydroD Sim (x=%d y=%d D=%d)" % (pull[0, 0], pull[0, 1], pull[0, 2]),
                          linewidth=2, markersize=5)
             axs[ii].plot(results[1].wave_disc[:, 4], results[1].DAMPING[:, ii, ii], '-or',
-                         label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[1, 2]),
+                         label="HydroD Sim (x=%d y=%d D=%d)" % (pull[1, 0], pull[1, 1], pull[1, 2]),
                          linewidth=2, markersize=5)
             axs[ii].plot(results[2].wave_disc[:, 4], results[2].DAMPING[:, ii, ii], '-og',
-                         label="sim_x_%f_y_%f_D%f" % (pull[2, 0], pull[2, 1], pull[2, 2]),
+                         label="HydroD Sim (x=%d y=%d D=%d)" % (pull[2, 0], pull[2, 1], pull[2, 2]),
                          linewidth=2, markersize=5)
             axs[ii].plot(results[2].wave_disc[:, 4], self.DAMPING[:, ii, ii], '--ob',
-                         label="Interpolated at %f" % interp_at[1],
+                         label="Interpolated at %d" % interp_at[1],
                          linewidth=2, markersize=5)
             axs[ii].legend(loc="upper right")
             axs[ii].set(ylabel=Damping_yaxis[ii])
@@ -129,10 +129,10 @@ class InterpolateParameters:
         fig, axs = plt.subplots(6, 1)
         for ii in np.linspace(0, 5, 6).astype(int):
             axs[ii].plot(results[1].wave_disc[:, 4], results[1].DAMPING[:, ii, ii], '-or',
-                         label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[1, 2]),
+                         label="HydroD Sim (x=%d y=%d D=%d)" % (pull[1, 0], pull[1, 1], pull[1, 2]),
                          linewidth=2, markersize=5)
             axs[ii].plot(results[2].wave_disc[:, 4], self.DAMPING[:, ii, ii], '--ob',
-                         label="Interpolated at %f" % interp_at[1],
+                         label="Interpolated at %d" % interp_at[1],
                          linewidth=2, markersize=5)
             axs[ii].legend(loc="upper right")
             axs[ii].set(ylabel=Damping_yaxis[ii])
@@ -141,69 +141,69 @@ class InterpolateParameters:
         ####################################################################################################
 
         fig, axs = plt.subplots(2, 2)
-        for jj in np.linspace(0, 2, 3).astype(int):
+        for jj in [0,2]:
             axs[0, 0].plot(results[0].wave_disc[:, 4], results[0].WAVEEX[0, :, jj, 2], '-+g',
-                           label="sim_x_%f_y_%f_D%f" % (pull[0, 0], pull[0, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[0, 0], pull[0, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[0, 0].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[0, :, jj, 2], '-+b',
-                           label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[0, 0].plot(results[2].wave_disc[:, 4], results[2].WAVEEX[0, :, jj, 2], '-+m',
-                           label="sim_x_%f_y_%f_D%f" % (pull[2, 0], pull[2, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[2, 0], pull[2, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[0, 0].plot(results[2].wave_disc[:, 4], self.WAVEEX[0, :, jj, 2], '-+r',
-                           label="Interpolated at %f" % interp_at[1],
+                           label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[0, 0].legend(loc="upper right")
             axs[0, 0].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force [N]')
             axs[0, 0].grid(b=True, which='both', axis='both')
 
-        for jj in np.linspace(3, 5, 3).astype(int):
+        for jj in [4]:
             axs[0, 1].plot(results[0].wave_disc[:, 4], results[0].WAVEEX[0, :, jj, 2], '-+g',
-                           label="sim_x_%f_y_%f_D%f" % (pull[0, 0], pull[0, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1,pull[0, 0], pull[0, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[0, 1].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[0, :, jj, 2], '-+b',
-                           label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1,pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[0, 1].plot(results[2].wave_disc[:, 4], results[2].WAVEEX[0, :, jj, 2], '-+m',
-                           label="sim_x_%f_y_%f_D%f" % (pull[2, 0], pull[2, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[2, 0], pull[2, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[0, 1].plot(results[2].wave_disc[:, 4], self.WAVEEX[0, :, jj, 2], '-+r',
-                           label="Interpolated at %f" % interp_at[1],
+                           label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
-            #axs[0, 1].legend(loc="upper right")
+            axs[0, 1].legend(loc="upper right")
             axs[0, 1].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force [N]')
             axs[0, 1].grid(b=True, which='both', axis='both')
 
-        for jj in np.linspace(0, 2, 3).astype(int):
+        for jj in [0,2]:
             axs[1, 0].plot(results[0].wave_disc[:, 4], results[0].WAVEEX[1, :, jj, 2], '-+g',
-                           label="sim_x_%f_y_%f_D%f" % (pull[0, 0], pull[0, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1,pull[0, 0], pull[0, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[1, 0].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[1, :, jj, 2], '-+b',
-                           label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1,pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[1, 0].plot(results[2].wave_disc[:, 4], results[2].WAVEEX[1, :, jj, 2], '-+m',
-                           label="sim_x_%f_y_%f_D%f" % (pull[2, 0], pull[2, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1,pull[2, 0], pull[2, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[1, 0].plot(results[2].wave_disc[:, 4], self.WAVEEX[1, :, jj, 2], '-+r',
-                           label="Interpolated at %f" % interp_at[1],
+                           label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[1, 0].legend(loc="upper right")
             axs[1, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force [N]')
             axs[1, 0].grid(b=True, which='both', axis='both')
 
-        for jj in np.linspace(3, 5, 3).astype(int):
+        for jj in [4]:
             axs[1, 1].plot(results[0].wave_disc[:, 4], results[0].WAVEEX[1, :, jj, 2], '-+g',
-                           label="sim_x_%f_y_%f_D%f" % (pull[0, 0], pull[0, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[0, 0], pull[0, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[1, 1].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[1, :, jj, 2], '-+b',
-                           label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[1, 1].plot(results[2].wave_disc[:, 4], results[2].WAVEEX[1, :, jj, 2], '-+m',
-                           label="sim_x_%f_y_%f_D%f" % (pull[2, 0], pull[2, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[2, 0], pull[2, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[1, 1].plot(results[2].wave_disc[:, 4], self.WAVEEX[1, :, jj, 2], '-+r',
-                           label="Interpolated at %f" % interp_at[1],
+                           label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[1, 1].legend(loc="upper right")
             axs[1, 1].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force [N]')
@@ -212,45 +212,45 @@ class InterpolateParameters:
         ######################################################################################
 
         fig, axs = plt.subplots(2, 2)
-        for jj in np.linspace(0, 2, 3).astype(int):
+        for jj in [0,2]:
             axs[0, 0].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[0, :, jj, 2], '-+b',
-                           label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[0, 0].plot(results[2].wave_disc[:, 4], self.WAVEEX[0, :, jj, 2], '-+r',
-                           label="Interpolated at %f" % interp_at[1],
+                           label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[0, 0].legend(loc="upper right")
             axs[0, 0].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force [N]')
             axs[0, 0].grid(b=True, which='both', axis='both')
 
-        for jj in np.linspace(3, 5, 3).astype(int):
+        for jj in [4]:
             axs[0, 1].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[0, :, jj, 2], '-+b',
-                           label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1,pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[0, 1].plot(results[2].wave_disc[:, 4], self.WAVEEX[0, :, jj, 2], '-+r',
-                           label="Interpolated at %f" % interp_at[1],
+                           label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[0, 1].legend(loc="upper right")
             axs[0, 1].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force [N]')
             axs[0, 1].grid(b=True, which='both', axis='both')
 
-        for jj in np.linspace(0, 2, 3).astype(int):
+        for jj in [0,2]:
             axs[1, 0].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[1, :, jj, 2], '-+b',
-                           label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1,pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[1, 0].plot(results[2].wave_disc[:, 4], self.WAVEEX[1, :, jj, 2], '-+r',
-                           label="Interpolated at %f" % interp_at[1],
+                           label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[1, 0].legend(loc="upper right")
             axs[1, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force [N]')
             axs[1, 0].grid(b=True, which='both', axis='both')
 
-        for jj in np.linspace(3, 5, 3).astype(int):
+        for jj in [4]:
             axs[1, 1].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[1, :, jj, 2], '-+b',
-                           label="sim_x_%f_y_%f_D%f" % (pull[1, 0], pull[1, 1], pull[0, 2]),
+                           label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
             axs[1, 1].plot(results[2].wave_disc[:, 4], self.WAVEEX[1, :, jj, 2], '-+r',
-                           label="Interpolated at %f" % interp_at[1],
+                           label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[1, 1].legend(loc="upper right")
             axs[1, 1].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force [N]')

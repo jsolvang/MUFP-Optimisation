@@ -20,10 +20,10 @@ class CompHydroCoefficient:
         self.HydroD_result = r'C:\Users\Joar\Documents\1_Education\NTNU\WadamRun1'
         self.HydroD_database = r'C:\Users/Joar/Documents/1_Education/NTNU/test.hyd'
         self.HydroD_license = r'C:\Program Files\DNVGL\license.lic'
-        self.HydroD_JScommand = r'C:\Users\Joar\Documents\1_Education\NTNU\Python_Hyd_script.js'
+        self.HydroD_JScommand = r'C:\Users\Joar\Documents\1_Education\NTNU\python_hyd_script_com.js'
         self.HydroD_w = 'HydroD_w'
 
-    def compute(self, coord, mass, floater):
+    def compute(self, coord, mass, floater, run):
         # Write the new value of D and draft in the GeniE file
         with open(self.GeniE_JScommand, 'r') as file:
             lines = file.readlines()
@@ -43,26 +43,28 @@ class CompHydroCoefficient:
             lines = file.readlines()
         with open(self.HydroD_JScommand, 'w') as file:
             for kk in range(len(lines)):
-                if kk == 97:
+                if kk == 68:
+                    file.write("PanelModel1.setModelTranslation(Vector3d(%f m,0 m,0 m)); \n" % coord.COM[0])
+                elif kk == 80:
                     file.write("MassModel1.setTotalMass(%f Kg); \n" % mass.total)
-                elif kk == 98:
-                    file.write("MassModel1.setCOG(Point(%f m,%f m,%f m)); \n" % (-coord.COM[0], coord.COM[1], coord.COM[2]))
-                elif kk == 99:
+                elif kk == 81:
+                    file.write("MassModel1.setCOG(Point(0 m,0 m,%f m)); \n" % coord.COM[2])
+                elif kk == 82:
                     file.write("MassModel1.setRadiusGyration(Vector3d(%f m,%f m,%f m)); \n" % (coord.RoG[0], coord.RoG[1], coord.RoG[2]))
                 else:
                     file.write(lines[kk])
 
-        # Run GeniE
-        #subprocess.run(
-        #    self.GeniE_path + " " + self.GeniE_database + " /new " + self.GeniE_license + " /com=" + self.GeniE_JScommand + " /exit")
+        if run == 1:
+            # Run GeniE
+            subprocess.run(
+                self.GeniE_path + " " + self.GeniE_database + " /new " + self.GeniE_license + " /com=" + self.GeniE_JScommand + " /exit")
 
-        #os.remove(self.GeniE_database)
+            os.remove(self.GeniE_database)
 
-        # Run HydroD
-        #subprocess.run(
-             #self.HydroD_path + " " + self.HydroD_database + " /new " + self.HydroD_license + " /com=" + self.HydroD_JScommand + " /exit")
-
-        #os.remove(self.HydroD_database)
+            # Run HydroD
+            subprocess.run(
+                 self.HydroD_path + " " + self.HydroD_database + " /new " + self.HydroD_license + " /com=" + self.HydroD_JScommand + " /exit")
+            os.remove(self.HydroD_database)
 
 
 

@@ -109,25 +109,25 @@ def plot_hydroD_results(results):
     axs[0, 1].grid(b=True, which='both', axis='both')
 
     fig, axs = plt.subplots(2, 2)
-    for jj in np.linspace(0, 2, 3).astype(int):
+    for jj in [0,2]:
         axs[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
         axs[0, 0].legend(loc="upper right")
         axs[0, 0].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force [N]')
         axs[0, 0].grid(b=True, which='both', axis='both')
 
-    for jj in np.linspace(3, 5, 3).astype(int):
-        axs[0, 1].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], label=legend_T[jj], linewidth=2, markersize=2)
+    for jj in [4]:
+        axs[0, 1].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
         axs[0, 1].legend(loc="upper right")
         axs[0, 1].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force [N]')
         axs[0, 1].grid(b=True, which='both', axis='both')
 
-    for jj in np.linspace(0, 2, 3).astype(int):
+    for jj in [0,2]:
         axs[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
         axs[1, 0].legend(loc="upper right")
         axs[1, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force [N]')
         axs[1, 0].grid(b=True, which='both', axis='both')
 
-    for jj in np.linspace(3, 5, 3).astype(int):
+    for jj in [4]:
         axs[1, 1].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], label=legend_T[jj], linewidth=2, markersize=2)
         axs[1, 1].legend(loc="upper right")
         axs[1, 1].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force [N]')

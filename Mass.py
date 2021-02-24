@@ -14,15 +14,16 @@ class Mass:
         self.column = area.cc_column * floater.column_height * rho.steel + area.column * floater.thickness * rho.steel
 
         # Heave Plate Mass
-        self.heave = (area.cc_heave * floater.heave_height * rho.steel) + (
-                area.heave_top * floater.thickness * rho.steel) + (area.heave * floater.thickness * rho.steel)
+        self.heave = (area.cc_heave * floater.heave_height * rho.steel) \
+                     + (area.heave_top * floater.thickness * rho.steel) \
+                     + (area.heave * floater.thickness * rho.steel)
+
+        # Total un-ballasted mass of platform
         float = 3 * (self.column + self.heave)
         self.turbines = 2 * (self.hub + self.nacelle + self.rotor + self.tower)
-        back = 2 * (self.column + self.heave) + self.turbines
-        front = (self.column + self.heave)
         total = self.turbines + float
 
-        # Ballast weight
+        # Calculating required ballasting mass
         self.ballast_total = buoy.total - total
         self.floater = float + self.ballast_total
         self.total = self.turbines + self.floater
@@ -41,8 +42,8 @@ class Mass:
             np.square(np.divide(floater.hub_space / 2 - floater.x_space, 2)) + np.square(floater.hub_height))
 
         # Tower area found by calculating the area of a tapered column. Subtracting the "in" (internal) volume.
-        tower_volume_out = np.divide(np.pi, 3) * tower_length * (
-                np.square(r_bot_outer) + np.square(r_out) + r_bot_outer * r_out)
-        tower_volume_in = np.divide(np.pi, 3) * tower_length * (
-                np.square(r_top_outer) + np.square(r_in) + r_top_outer * r_in)
+        tower_volume_out = np.divide(np.pi, 3) * tower_length * \
+                           (np.square(r_bot_outer) + np.square(r_out) + r_bot_outer * r_out)
+        tower_volume_in = np.divide(np.pi, 3) * tower_length * \
+                          (np.square(r_top_outer) + np.square(r_in) + r_top_outer * r_in)
         self.tower = (tower_volume_out - tower_volume_in) * rho.steel

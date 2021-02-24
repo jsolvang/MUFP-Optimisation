@@ -22,7 +22,4 @@ class FloaterParameters:
         self.thickness = 0.07
         self.column_height = self.height - self.heave_height
 
-        # Initialising Mass and Stiffness Matrix
-        self.mass_matrix = np.zeros(shape=(6, 6))
-        self.stiffness_matrix = np.zeros(shape=(6, 6))
 

@@ -8,7 +8,7 @@ from scipy.interpolate import interp1d
 
 class CompHydroCoefficient:
 
-    def __init__(self):
+    def __init__(self, coord, mass, floater, run):
         # GeniE = self.options['GeniE_dict']
         self.GeniE_path = r"C:\Program Files\DNVGL\GeniE V7.11-07\Program\GenieR.exe"
         self.GeniE_database = r"C:\Users/Joar/Documents/1_Education/NTNU/test.gnx"
@@ -22,6 +22,7 @@ class CompHydroCoefficient:
         self.HydroD_license = r'C:\Program Files\DNVGL\license.lic'
         self.HydroD_JScommand = r'C:\Users\Joar\Documents\1_Education\NTNU\python_hyd_script_com.js'
         self.HydroD_w = 'HydroD_w'
+        self.compute(coord, mass, floater, run)
 
     def compute(self, coord, mass, floater, run):
         # Write the new value of D and draft in the GeniE file

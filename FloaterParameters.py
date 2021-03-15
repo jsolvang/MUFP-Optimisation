@@ -18,8 +18,10 @@ class FloaterParameters:
         self.hub_space = 142.1
         self.draft = 14
         self.height = 25
-        self.free_board = self.height - self.draft
         self.thickness = 0.07
+
+
+        self.free_board = self.height - self.draft
         self.column_height = self.height - self.heave_height
 
 

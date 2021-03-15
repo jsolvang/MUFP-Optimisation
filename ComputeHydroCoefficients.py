@@ -52,6 +52,8 @@ class CompHydroCoefficient:
                     file.write("MassModel1.setCOG(Point(0 m,0 m,%f m)); \n" % coord.COM[2])
                 elif kk == 82:
                     file.write("MassModel1.setRadiusGyration(Vector3d(%f m,%f m,%f m)); \n" % (coord.RoG[0], coord.RoG[1], coord.RoG[2]))
+                elif kk == 83:
+                    file.write("MassModel1.setSpecificProductInertia(%f m,%f m,%f m); \n" % (coord.PoI[0], coord.PoI[1], coord.PoI[2]))
                 else:
                     file.write(lines[kk])
 
@@ -64,7 +66,7 @@ class CompHydroCoefficient:
 
             # Run HydroD
             subprocess.run(
-                 self.HydroD_path + " " + self.HydroD_database + " /new " + self.HydroD_license + " /com=" + self.HydroD_JScommand + " /exit")
+                 self.HydroD_path + " " + self.HydroD_database + " /new " + self.HydroD_license + " /com=" + self.HydroD_JScommand) # + " /exit")
             os.remove(self.HydroD_database)
 
 

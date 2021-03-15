@@ -3,7 +3,6 @@ import subprocess
 import os
 import matplotlib.pyplot as plt
 import pickle
-#legend_F = ['|$X_1$|', '|$X_2$|', '|$X_3$|', '|$X_4$|', '|$X_5$|', '|$X_6$|']
 
 class InterpolateParameters:
     def __init__(self, pull, interp_at):
@@ -11,7 +10,7 @@ class InterpolateParameters:
 
         for i in np.linspace(0, len(pull[:, 1]) - 1, 3).astype(int):
             file_loc = r'C:\Users\Joar\Documents\1_Education\NTNU\pickle_files'
-            file_name = "\sim_x_%f_y_%f_D%f" % (pull[i, 0], pull[i, 1], pull[i, 2])
+            file_name = "\sim_x_%d_y_%d_D%d" % (pull[i, 0], pull[i, 1], pull[i, 2])
             file_path = file_loc + file_name
             infile = open(file_path, 'rb')
             results.append(pickle.load(infile))
@@ -53,6 +52,9 @@ class InterpolateParameters:
 
         #################################################################################
         results = self.results
+
+        styles = ['-b', '-c', '-r', '-m', '-g', '-y']
+        styles_dashed = ['--b', '--c', '--r', '--m', '--g', '--y']
 
         ADDEDMASS_yaxis = [['Added Mass [KG] (DOF:Surge)'],
                             ['Added Mass [KG] (DOF:Sway)'],
@@ -213,10 +215,10 @@ class InterpolateParameters:
 
         fig, axs = plt.subplots(2, 2)
         for jj in [0,2]:
-            axs[0, 0].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[0, :, jj, 2], '-+b',
+            axs[0, 0].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[0, :, jj, 2], styles[jj],
                            label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
-            axs[0, 0].plot(results[2].wave_disc[:, 4], self.WAVEEX[0, :, jj, 2], '-+r',
+            axs[0, 0].plot(results[2].wave_disc[:, 4], self.WAVEEX[0, :, jj, 2], styles_dashed[jj],
                            label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[0, 0].legend(loc="upper right")
@@ -224,10 +226,10 @@ class InterpolateParameters:
             axs[0, 0].grid(b=True, which='both', axis='both')
 
         for jj in [4]:
-            axs[0, 1].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[0, :, jj, 2], '-+b',
+            axs[0, 1].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[0, :, jj, 2], styles[jj],
                            label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1,pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
-            axs[0, 1].plot(results[2].wave_disc[:, 4], self.WAVEEX[0, :, jj, 2], '-+r',
+            axs[0, 1].plot(results[2].wave_disc[:, 4], self.WAVEEX[0, :, jj, 2], styles_dashed[jj],
                            label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[0, 1].legend(loc="upper right")
@@ -235,10 +237,10 @@ class InterpolateParameters:
             axs[0, 1].grid(b=True, which='both', axis='both')
 
         for jj in [0,2]:
-            axs[1, 0].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[1, :, jj, 2], '-+b',
+            axs[1, 0].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[1, :, jj, 2], styles[jj],
                            label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1,pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
-            axs[1, 0].plot(results[2].wave_disc[:, 4], self.WAVEEX[1, :, jj, 2], '-+r',
+            axs[1, 0].plot(results[2].wave_disc[:, 4], self.WAVEEX[1, :, jj, 2], styles_dashed[jj],
                            label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[1, 0].legend(loc="upper right")
@@ -246,10 +248,10 @@ class InterpolateParameters:
             axs[1, 0].grid(b=True, which='both', axis='both')
 
         for jj in [4]:
-            axs[1, 1].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[1, :, jj, 2], '-+b',
+            axs[1, 1].plot(results[1].wave_disc[:, 4], results[1].WAVEEX[1, :, jj, 2], styles[jj],
                            label="|X%d| HydroD Sim (x=%d y=%d D=%d)" % (jj+1, pull[1, 0], pull[1, 1], pull[0, 2]),
                            linewidth=2, markersize=5)
-            axs[1, 1].plot(results[2].wave_disc[:, 4], self.WAVEEX[1, :, jj, 2], '-+r',
+            axs[1, 1].plot(results[2].wave_disc[:, 4], self.WAVEEX[1, :, jj, 2], styles_dashed[jj],
                            label="|X%d| Interpolated at %d" % (jj+1, interp_at[1]),
                            linewidth=2, markersize=5)
             axs[1, 1].legend(loc="upper right")

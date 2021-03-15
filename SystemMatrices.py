@@ -68,8 +68,8 @@ class MatrixCalculation:
         BM_44 = self.I44 / buoy.displaced_volume
         BM_55 = self.I55 / buoy.displaced_volume
 
-        KM_44 = BM_44 + coord.COB[2]
-        KM_55 = BM_55 + coord.COB[2]
+        KM_44 = BM_44 + (coord.COB[2] - coord.COM[2])
+        KM_55 = BM_55 + (coord.COB[2] - coord.COM[2])
 
         # Calculating stiffness terms
         self.stiffness[2, 2] = rho.water * 3 * area.column * env.g

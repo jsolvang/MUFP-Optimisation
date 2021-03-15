@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-class CrossSectionalArea:
+class Area:
     def __init__(self, floater):
         # Calculating the cross-sectional area of the columns and heave plates
         self.column = np.divide((np.pi * np.square(floater.dia_column)), 4)

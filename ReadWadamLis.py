@@ -64,27 +64,53 @@ class ReadWadamLis:
                 found = 1
                 self.displaced_volume = float(hydroD_results[ii + 3].split()[6])
                 self.WPA = float(hydroD_results[ii + 5].split()[5])
-                if "=" in hydroD_results[ii + 7]:
-                    self.COB = [float(hydroD_results[ii + 7].split()[4].replace("=", "")),
-                                float(hydroD_results[ii + 8].split()[2]),
-                                float(hydroD_results[ii + 9].split()[1].replace("=", ""))]
-                else:
+                if hydroD_results[ii + 7].split()[4] == "=":
                     self.COB = [float(hydroD_results[ii + 7].split()[5]),
                                 float(hydroD_results[ii + 8].split()[2]),
                                 float(hydroD_results[ii + 9].split()[1].replace("=", ""))]
+                else:
+                    self.COB = [float(hydroD_results[ii + 7].split()[4].replace("=", "")),
+                                float(hydroD_results[ii + 8].split()[2]),
+                                float(hydroD_results[ii + 9].split()[1].replace("=", ""))]
+
 
                 self.meta_centric_height_transverse = float(hydroD_results[ii + 10].split()[5])
                 self.meta_centric_height_longitudinal = float(hydroD_results[ii + 11].split()[5])
 
                 self.stiffness_matrix[2, 2] = float(hydroD_results[ii + 12].split()[5])
                 self.stiffness_matrix[2, 3] = float(hydroD_results[ii + 13].split()[5])
-                self.stiffness_matrix[2, 4] = float(hydroD_results[ii + 14].split()[5])
+                if hydroD_results[ii + 14].split()[4] == "=":
+                    self.stiffness_matrix[2, 4] = float(hydroD_results[ii + 14].split()[5])
+                else:
+                    self.stiffness_matrix[2, 4] = float(hydroD_results[ii + 14].split()[4].replace("=", ""))
+
                 self.stiffness_matrix[4, 2] = self.stiffness_matrix[2, 4]
-                self.stiffness_matrix[3, 3] = float(hydroD_results[ii + 15].split()[5])
-                self.stiffness_matrix[4, 4] = float(hydroD_results[ii + 16].split()[5])
-                self.stiffness_matrix[3, 4] = float(hydroD_results[ii + 17].split()[5])
-                self.stiffness_matrix[3, 5] = float(hydroD_results[ii + 18].split()[5])
-                self.stiffness_matrix[4, 5] = float(hydroD_results[ii + 19].split()[5])
+
+                if hydroD_results[ii + 15].split()[4] == "=":
+                    self.stiffness_matrix[3, 3] = float(hydroD_results[ii + 15].split()[5])
+                else:
+                    self.stiffness_matrix[3, 3] = float(hydroD_results[ii + 15].split()[4].replace("=", ""))
+
+                if hydroD_results[ii + 16].split()[4] == "=":
+                    self.stiffness_matrix[4, 4] = float(hydroD_results[ii + 16].split()[5])
+                else:
+                    self.stiffness_matrix[4, 4] = float(hydroD_results[ii + 16].split()[4].replace("=", ""))
+
+                if hydroD_results[ii + 17].split()[4] == "=":
+                    self.stiffness_matrix[3, 4] = float(hydroD_results[ii + 17].split()[5])
+                else:
+                    self.stiffness_matrix[3, 4] = float(hydroD_results[ii + 17].split()[4].replace("=", ""))
+
+                if hydroD_results[ii + 18].split()[4] == "=":
+                    self.stiffness_matrix[3, 5] = float(hydroD_results[ii + 18].split()[5])
+                else:
+                    self.stiffness_matrix[3, 5] = float(hydroD_results[ii + 18].split()[4].replace("=", ""))
+
+                if hydroD_results[ii + 19].split()[4] == "=":
+                    self.stiffness_matrix[4, 5] = float(hydroD_results[ii + 19].split()[5])
+                else:
+                    self.stiffness_matrix[4, 5] = float(hydroD_results[ii + 19].split()[4].replace("=", ""))
+
 
         ii = 1
         found = 0
@@ -199,6 +225,10 @@ class ReadWadamLis:
                             self.WAVEEX[mm, nn, qq, :] = np.float_(hydroD_results[ii + 4 + 2 * qq].split()[1:5])
                             self.MOTIONS[mm, nn, qq, :] = np.float_(hydroD_results[ii + 22 + 2 * qq].split()[1:5])
 
-        self.WAVEEX[:, :, 0: 3, 0: 3] = self.WAVEEX[:, :, 0: 3, 0: 3] * self.RO * self.VOL * self.G * np.divide(self.WA,
-                                                                                                                self.L)
-        self.WAVEEX[:, :, 4: 6, 0: 3] = self.WAVEEX[:, :, 4: 6, 0: 3] * self.RO * self.VOL * self.G * self.WA
+        self.WAVEEX[:, :, 0: 3, 0: 3] = self.WAVEEX[:, :, 0: 3, 0: 3] * self.RO * self.VOL * self.G * np.divide(self.WA, self.L)
+        self.WAVEEX[:, :, 3: 6, 0: 3] = self.WAVEEX[:, :, 3: 6, 0: 3] * self.RO * self.VOL * self.G * self.WA
+
+        self.MOTIONS[:, :, 0: 3, 0: 3] = self.MOTIONS[:, :, 0: 3, 0: 3] * self.WA
+        self.MOTIONS[:, :, 3: 6, 0: 3] = self.MOTIONS[:, :, 3: 6, 0: 3] * np.divide(self.WA, self.L)
+
+

@@ -28,19 +28,26 @@ class GeneralisedCoordinateSystem:
         self.hubR = ["Right RNA", -floater.x_space, floater.hub_space / 2, floater.hub_height,
                      mass.hub + mass.rotor + mass.nacelle]
 
-        self.towerL = ["Left Tower", -floater.x_space, -np.divide(floater.y_space + floater.hub_space, 2) / 2,
+        self.towerL = ["Left Tower", -floater.x_space, -floater.y_space/2 - (np.subtract(floater.hub_space/2, floater.y_space/2) / 2.3),
                        floater.hub_height / 2.3, mass.tower]
-        self.towerR = ["Right Tower", -floater.x_space, np.divide(floater.y_space + floater.hub_space, 2) / 2,
+        self.towerR = ["Right Tower", -floater.x_space, floater.y_space/2 + (np.subtract(floater.hub_space/2, floater.y_space/2) / 2.3),
                        floater.hub_height / 2.3, mass.tower]
 
-        self.mass_df = pd.DataFrame([self.columnfront, self.columnbackL, self.columnbackR,
+        self.unballasted_mass_df = pd.DataFrame([self.columnfront, self.columnbackL, self.columnbackR,
                                      self.heavefront, self.heavebackL, self.heavebackR,
                                      self.hubL, self.hubR,
                                      self.towerL, self.towerR])
 
-        self.mass_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
-        self.mass_df.set_index('Component', inplace=True)
-        self.mass_df['weight_contribution'] = np.divide(self.mass_df['Mass [kg]'], np.sum(self.mass_df['Mass [kg]']))
+        self.unballasted_mass_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
+        self.unballasted_mass_df.set_index('Component', inplace=True)
+
+        # Calculating the un-ballasted COM by taking a weighted average of all mass components
+        self.unballasted_mass_df['weight_contribution'] = np.divide(self.unballasted_mass_df['Mass [kg]'], np.sum(self.unballasted_mass_df['Mass [kg]']))
+        x = pd.DataFrame(self.unballasted_mass_df['x'] * self.unballasted_mass_df['weight_contribution'])
+        x.columns = ['X_average']
+        x['Y_average'] = pd.DataFrame(self.unballasted_mass_df['y'] * self.unballasted_mass_df['weight_contribution'])
+        x['Z_average'] = pd.DataFrame(self.unballasted_mass_df['z'] * self.unballasted_mass_df['weight_contribution'])
+        self.COM_unballasted = [x['X_average'].sum(), x['Y_average'].sum(), x['Z_average'].sum()]
 
     def _determine_buoy_coordinates(self, floater, area, mass, rho, buoy):
         # Calculating the centre of buoyancy for each column and heave plate
@@ -63,15 +70,6 @@ class GeneralisedCoordinateSystem:
         self.buoy_df.columns = ['Component', 'x', 'y', 'z', 'Buoy [kg]']
         self.buoy_df.set_index('Component', inplace=True)
 
-    def _allocate_necessary_ballasting(self, floater, area, mass, rho):
-        # Calculating the un-ballasted COM by taking a weighted average of all mass components
-        self.mass_df['weight_contribution'] = np.divide(self.mass_df['Mass [kg]'], np.sum(self.mass_df['Mass [kg]']))
-        x = pd.DataFrame(self.mass_df['x'] * self.mass_df['weight_contribution'])
-        x.columns = ['X_average']
-        x['Y_average'] = pd.DataFrame(self.mass_df['y'] * self.mass_df['weight_contribution'])
-        x['Z_average'] = pd.DataFrame(self.mass_df['z'] * self.mass_df['weight_contribution'])
-        self.COM = [x['X_average'].sum(), x['Y_average'].sum(), x['Z_average'].sum()]
-
         # Calculating the COB by taking a weighted average of all buoyant components
         self.buoy_df['buoy_contribution'] = np.divide(self.buoy_df['Buoy [kg]'], np.sum(self.buoy_df['Buoy [kg]']))
         x_buoy = pd.DataFrame(self.buoy_df['x'] * self.buoy_df['buoy_contribution'])
@@ -80,10 +78,14 @@ class GeneralisedCoordinateSystem:
         x_buoy['Z_average'] = self.buoy_df['z'] * self.buoy_df['buoy_contribution']
         self.COB = [x_buoy['X_average'].sum(), x_buoy['Y_average'].sum(), x_buoy['Z_average'].sum()]
 
+    def _allocate_necessary_ballasting(self, floater, area, mass, rho):
+
         # Finding the required COM of the ballast to align final vertical centre of gravity (VCG) with the VCB
-        ratio = mass.ballast_total / np.sum(self.mass_df['Mass [kg]'])
-        COM_length = (self.COB[0] - self.COM[0])
+        ratio = mass.ballast_total / np.sum(self.unballasted_mass_df['Mass [kg]'])
+        COM_length = (self.COB[0] - self.COM_unballasted[0])
         COM_ballast = self.COB[0] + (COM_length / ratio)
+
+
         mass.ballast_back = ((-COM_ballast * mass.ballast_total) / floater.x_space) / 2
         mass.ballast_front = mass.ballast_total - 2 * mass.ballast_back
 
@@ -156,3 +158,12 @@ class GeneralisedCoordinateSystem:
         self.RoG = [np.sqrt(np.sum(self.rog_df['I_x']) / np.sum(self.mass_df['Mass [kg]'])),
                     np.sqrt(np.sum(self.rog_df['I_y']) / np.sum(self.mass_df['Mass [kg]'])),
                     np.sqrt(np.sum(self.rog_df['I_z']) / np.sum(self.mass_df['Mass [kg]']))]
+
+        self.PoI_df = pd.DataFrame(self.mass_df['x'] - self.COM[0])
+        self.PoI_df['y'] = self.mass_df['y'] - self.COM[1]
+        self.PoI_df['z'] = self.mass_df['z'] - self.COM[2]
+        self.PoI_df['Mass [kg]'] = self.mass_df['Mass [kg]']
+        self.PoI_df['Ixy'] = self.PoI_df['x']*self.PoI_df['y']*self.PoI_df['Mass [kg]']
+        self.PoI_df['Iyz'] = self.PoI_df['y']*self.PoI_df['z']*self.PoI_df['Mass [kg]']
+        self.PoI_df['Ixz'] = self.PoI_df['x']*self.PoI_df['z']*self.PoI_df['Mass [kg]']
+        self.PoI = [sum(self.PoI_df['Ixy'])/mass.total,sum(self.PoI_df['Iyz'])/mass.total, sum(self.PoI_df['Ixz'])/mass.total]

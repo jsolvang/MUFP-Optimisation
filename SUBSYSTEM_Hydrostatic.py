@@ -6,7 +6,7 @@ from Environment import Environment
 from Buoy import Buoy
 from Mass import Mass
 from Density import Density
-from CrossSectionalArea import CrossSectionalArea
+from Area import Area
 from GeneralisedCoordinateSystem import GeneralisedCoordinateSystem
 from SystemMatrices import MatrixCalculation
 from ComputeHydroCoefficients import CompHydroCoefficient
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     mufp = FloaterParameters(150, 50, 12)
     env = Environment()
     rho = Density()
-    csa = CrossSectionalArea(mufp)
+    csa = Area(mufp)
     buoy = Buoy(mufp, csa, rho)
     mass = Mass(mufp, csa, buoy, rho)
     coord = GeneralisedCoordinateSystem(mufp, csa, mass, rho, buoy, env)

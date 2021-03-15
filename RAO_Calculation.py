@@ -24,8 +24,6 @@ def calulate_RAOs(wave_disc, mass, ADDEDMASS, DAMPING, stiffness, WAVEEX, MOTION
 
     for jj in omega_index:
         X[0, jj, :] = np.dot(np.linalg.inv(Y[jj, :, :]), H[jj, :])
-        X[1, :, :] = X[0, :, :] * wave_disc[jj, 4]
-        X[2, :, :] = X[0, :, :] * np.square(wave_disc[jj, 4])
 
     if plot == 1:
         plt.rcParams["figure.figsize"] = (10, 20)
@@ -37,24 +35,6 @@ def calulate_RAOs(wave_disc, mass, ADDEDMASS, DAMPING, stiffness, WAVEEX, MOTION
                          markersize=5)
             axs[jj].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
             axs[jj].set(xlabel='omega, rad/s', ylabel=Y_lab[jj], title="Displacement")
-            axs[jj].legend(loc="upper right")
-            axs[jj].grid(b=True, which='both', axis='both')
-        plt.tight_layout()
-
-        fig, axs = plt.subplots(6)
-        for jj in np.linspace(0, 5, 6).astype(int):
-            axs[jj].plot(wave_disc[:, 4], np.absolute(X[1, :, jj]), '-b', label="Transfer Function", linewidth=2,
-                         markersize=5)
-            axs[jj].set(xlabel='omega, rad/s', ylabel=Y_lab[jj], title="Velcoity")
-            axs[jj].legend(loc="upper right")
-            axs[jj].grid(b=True, which='both', axis='both')
-        plt.tight_layout()
-
-        fig, axs = plt.subplots(6)
-        for jj in np.linspace(0, 5, 6).astype(int):
-            axs[jj].plot(wave_disc[:, 4], np.absolute(X[2, :, jj]), '-b', label="Transfer Function", linewidth=2,
-                         markersize=5)
-            axs[jj].set(xlabel='omega, rad/s', ylabel=Y_lab[jj], title="Acceleration")
             axs[jj].legend(loc="upper right")
             axs[jj].grid(b=True, which='both', axis='both')
         plt.tight_layout()

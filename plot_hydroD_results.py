@@ -192,7 +192,7 @@ def plot_hydroD_results(results, floater, env, plot_sync):
     axs[0, 1].grid(b=True, which='both', axis='both')
 
     fig, axs = plt.subplots(2, 2)
-    for jj in [0,2]:
+    for jj in [0,1,2]:
         axs[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
         if plot_sync == 1:
             for xc in omega_x:
@@ -204,8 +204,8 @@ def plot_hydroD_results(results, floater, env, plot_sync):
         axs[0, 0].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force Translation [N]')
         axs[0, 0].grid(b=True, which='both', axis='both')
 
-    for jj in [4]:
-        axs[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], '-g', label=legend_F[jj], linewidth=2, markersize=2)
+    for jj in [3,4,5]:
+        axs[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
         if plot_sync == 1:
             for xc in omega_x:
                 axs[1, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')

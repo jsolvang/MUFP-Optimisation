@@ -66,7 +66,7 @@ class CompHydroCoefficient:
 
             # Run HydroD
             subprocess.run(
-                 self.HydroD_path + " " + self.HydroD_database + " /new " + self.HydroD_license + " /com=" + self.HydroD_JScommand) # + " /exit")
+                 self.HydroD_path + " " + self.HydroD_database + " /new " + self.HydroD_license + " /com=" + self.HydroD_JScommand + " /exit")
             os.remove(self.HydroD_database)
 
 

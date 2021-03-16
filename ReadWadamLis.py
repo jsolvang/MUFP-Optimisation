@@ -27,35 +27,30 @@ class ReadWadamLis:
                 self.CFM = [float(hydroD_results[ii + 10].split()[5]), float(hydroD_results[ii + 11].split()[5]),
                             float(hydroD_results[ii + 12].split()[5])]
 
+
         ii = 1
         found = 0
 
-        self.mass_matrix[0, 0] = self.mass
-        self.mass_matrix[1, 1] = self.mass
-        self.mass_matrix[2, 2] = self.mass
-        self.mass_matrix[3, 3] = self.mass * np.square(self.RoG[0])
-        self.mass_matrix[4, 4] = self.mass * np.square(self.RoG[1])
-        self.mass_matrix[5, 5] = self.mass * np.square(self.RoG[2])
+        while found == 0:
+            k = hydroD_results[ii].find(' 4.2 STATIC  RESULTS\n')
+            ii += 1
+            if k != -1:
+                found = 1
+                M1 = np.float_(hydroD_results[ii + 8].split()[1:7])
+                M2 = np.float_(hydroD_results[ii + 9].split()[1:7])
+                M3 = np.float_(hydroD_results[ii + 10].split()[1:7])
+                M4 = np.float_(hydroD_results[ii + 11].split()[1:7])
+                M5 = np.float_(hydroD_results[ii + 12].split()[1:7])
+                M6 = np.float_(hydroD_results[ii + 13].split()[1:7])
+                self.mass_matrix = np.array([M1, M2, M3, M4, M5, M6])
 
-        self.mass_matrix[3, 4] = -self.mass * self.CFM[0]
-        self.mass_matrix[4, 3] = -self.mass * self.CFM[0]
-
-        self.mass_matrix[3, 5] = -self.mass * self.CFM[1]
-        self.mass_matrix[5, 3] = -self.mass * self.CFM[1]
-
-        self.mass_matrix[0, 4] = self.mass * self.COG[2]
-        self.mass_matrix[4, 0] = self.mass * self.COG[2]
-
-        self.mass_matrix[1, 3] = -self.mass * self.COG[2]
-        self.mass_matrix[3, 1] = -self.mass * self.COG[2]
-
-        self.mass_matrix[1, 5] = self.mass * self.COG[0]
-        self.mass_matrix[5, 1] = self.mass * self.COG[0]
-
-        self.mass_matrix[2, 4] = -self.mass * self.COG[0]
-        self.mass_matrix[4, 2] = -self.mass * self.COG[0]
-
-        self.stiffness_matrix = np.zeros(shape=(6, 6))
+                K1 = np.float_(hydroD_results[ii + 20].split()[1:7])
+                K2 = np.float_(hydroD_results[ii + 21].split()[1:7])
+                K3 = np.float_(hydroD_results[ii + 22].split()[1:7])
+                K4 = np.float_(hydroD_results[ii + 23].split()[1:7])
+                K5 = np.float_(hydroD_results[ii + 24].split()[1:7])
+                K6 = np.float_(hydroD_results[ii + 25].split()[1:7])
+                self.stiffness_matrix = np.array([K1, K2, K3, K4, K5, K6])
 
         while found == 0:
             k = hydroD_results[ii].find('     HYDROSTATIC DATA:\n')
@@ -73,44 +68,8 @@ class ReadWadamLis:
                                 float(hydroD_results[ii + 8].split()[2]),
                                 float(hydroD_results[ii + 9].split()[1].replace("=", ""))]
 
-
                 self.meta_centric_height_transverse = float(hydroD_results[ii + 10].split()[5])
                 self.meta_centric_height_longitudinal = float(hydroD_results[ii + 11].split()[5])
-
-                self.stiffness_matrix[2, 2] = float(hydroD_results[ii + 12].split()[5])
-                self.stiffness_matrix[2, 3] = float(hydroD_results[ii + 13].split()[5])
-                if hydroD_results[ii + 14].split()[4] == "=":
-                    self.stiffness_matrix[2, 4] = float(hydroD_results[ii + 14].split()[5])
-                else:
-                    self.stiffness_matrix[2, 4] = float(hydroD_results[ii + 14].split()[4].replace("=", ""))
-
-                self.stiffness_matrix[4, 2] = self.stiffness_matrix[2, 4]
-
-                if hydroD_results[ii + 15].split()[4] == "=":
-                    self.stiffness_matrix[3, 3] = float(hydroD_results[ii + 15].split()[5])
-                else:
-                    self.stiffness_matrix[3, 3] = float(hydroD_results[ii + 15].split()[4].replace("=", ""))
-
-                if hydroD_results[ii + 16].split()[4] == "=":
-                    self.stiffness_matrix[4, 4] = float(hydroD_results[ii + 16].split()[5])
-                else:
-                    self.stiffness_matrix[4, 4] = float(hydroD_results[ii + 16].split()[4].replace("=", ""))
-
-                if hydroD_results[ii + 17].split()[4] == "=":
-                    self.stiffness_matrix[3, 4] = float(hydroD_results[ii + 17].split()[5])
-                else:
-                    self.stiffness_matrix[3, 4] = float(hydroD_results[ii + 17].split()[4].replace("=", ""))
-
-                if hydroD_results[ii + 18].split()[4] == "=":
-                    self.stiffness_matrix[3, 5] = float(hydroD_results[ii + 18].split()[5])
-                else:
-                    self.stiffness_matrix[3, 5] = float(hydroD_results[ii + 18].split()[4].replace("=", ""))
-
-                if hydroD_results[ii + 19].split()[4] == "=":
-                    self.stiffness_matrix[4, 5] = float(hydroD_results[ii + 19].split()[5])
-                else:
-                    self.stiffness_matrix[4, 5] = float(hydroD_results[ii + 19].split()[4].replace("=", ""))
-
 
         ii = 1
         found = 0
@@ -158,7 +117,7 @@ class ReadWadamLis:
 
         ii = 0
 
-        self.ADDMASS = np.zeros(shape=(int(self.numwavelengths), 6, 7))
+        ADDMASS = np.zeros(shape=(int(self.numwavelengths), 6, 7))
         for nn in np.linspace(0, int(self.numwavelengths) - 1, int(self.numwavelengths)).astype(int):
             found = 0
             while found == 0 and ii < len(hydroD_results):
@@ -167,20 +126,17 @@ class ReadWadamLis:
                 ii += 1
                 if k != -1:
                     found = 1
-                    self.ADDMASS[nn, 0, :] = np.float_(hydroD_results[ii + 3].split())
-                    self.ADDMASS[nn, 1, :] = np.float_(hydroD_results[ii + 4].split())
-                    self.ADDMASS[nn, 2, :] = np.float_(hydroD_results[ii + 5].split())
-                    self.ADDMASS[nn, 3, :] = np.float_(hydroD_results[ii + 6].split())
-                    self.ADDMASS[nn, 4, :] = np.float_(hydroD_results[ii + 7].split())
-                    self.ADDMASS[nn, 5, :] = np.float_(hydroD_results[ii + 8].split())
+                    ADDMASS[nn, 0, :] = np.float_(hydroD_results[ii + 3].split())
+                    ADDMASS[nn, 1, :] = np.float_(hydroD_results[ii + 4].split())
+                    ADDMASS[nn, 2, :] = np.float_(hydroD_results[ii + 5].split())
+                    ADDMASS[nn, 3, :] = np.float_(hydroD_results[ii + 6].split())
+                    ADDMASS[nn, 4, :] = np.float_(hydroD_results[ii + 7].split())
+                    ADDMASS[nn, 5, :] = np.float_(hydroD_results[ii + 8].split())
                     # print(self.ADDMASS[nn,0,:])
                     break
         ii = 0
-        self.ADDEDMASS = self.ADDMASS[:, :, 1:7]
-        self.ADDEDMASS[:, 0:3, 0:3] = self.ADDEDMASS[:, 0:3, 0:3] * self.RO * self.VOL
-        self.ADDEDMASS[:, 0:3, 3:6] = self.ADDEDMASS[:, 0:3, 3:6] * self.RO * self.VOL * self.L
-        self.ADDEDMASS[:, 3:6, 0:3] = self.ADDEDMASS[:, 3:6, 0:3] * self.RO * self.VOL * self.L
-        self.ADDEDMASS[:, 3:6, 3:6] = self.ADDEDMASS[:, 3:6, 3:6] * self.RO * self.VOL * self.L * self.L
+        self.ADDEDMASS = ADDMASS[:, :, 1:7]
+
 
         self.DAMPING = np.zeros(shape=(int(self.numwavelengths), 6, 7))
         for nn in np.linspace(0, int(self.numwavelengths) - 1, int(self.numwavelengths)).astype(int):
@@ -202,12 +158,6 @@ class ReadWadamLis:
 
         self.DAMPING = self.DAMPING[:, :, 1:7]
 
-        self.DAMPING[:, 0: 3, 0: 3] = self.DAMPING[:, 0: 3, 0: 3] * self.RO * self.VOL * np.sqrt(
-            np.divide(self.G, self.L))
-        self.DAMPING[:, 0: 3, 3: 6] = self.DAMPING[:, 0: 3, 3: 6] * self.RO * self.VOL * np.sqrt(self.G * self.L)
-        self.DAMPING[:, 3: 6, 0: 3] = self.DAMPING[:, 3: 6, 0: 3] * self.RO * self.VOL * np.sqrt(self.G * self.L)
-        self.DAMPING[:, 3: 6, 3: 6] = self.DAMPING[:, 3: 6, 3: 6] * self.RO * self.VOL * self.L * np.sqrt(
-            self.G * self.L)
 
         self.WAVEEX = np.zeros(shape=(int(self.numheadangles), int(self.numwavelengths), 6, 4))
         self.MOTIONS = np.zeros(shape=(int(self.numheadangles), int(self.numwavelengths), 6, 4))
@@ -224,6 +174,28 @@ class ReadWadamLis:
                         for qq in np.linspace(0, 5, 6).astype(int):
                             self.WAVEEX[mm, nn, qq, :] = np.float_(hydroD_results[ii + 4 + 2 * qq].split()[1:5])
                             self.MOTIONS[mm, nn, qq, :] = np.float_(hydroD_results[ii + 22 + 2 * qq].split()[1:5])
+
+        self.stiffness_matrix[0: 3, 0: 3] = self.stiffness_matrix[0: 3, 0: 3] * self.RO * self.VOL * self.G / self.L
+        self.stiffness_matrix[3: 6, 0: 3] = self.stiffness_matrix[3: 6, 0: 3] * self.RO * self.VOL * self.G
+        self.stiffness_matrix[0: 3, 3: 6] = self.stiffness_matrix[0: 3, 3: 6] * self.RO * self.VOL * self.G
+        self.stiffness_matrix[3: 6, 3: 6] = self.stiffness_matrix[3: 6, 3: 6] * self.RO * self.VOL * self.G * self.L
+
+        self.mass_matrix[0: 3, 0: 3] = self.mass_matrix[0: 3, 0: 3] * self.RO * self.VOL
+        self.mass_matrix[3: 6, 0: 3] = self.mass_matrix[3: 6, 0: 3] * self.RO * self.VOL * self.L
+        self.mass_matrix[0: 3, 3: 6] = self.mass_matrix[0: 3, 3: 6] * self.RO * self.VOL * self.L
+        self.mass_matrix[3: 6, 3: 6] = self.mass_matrix[3: 6, 3: 6] * self.RO * self.VOL * self.L * self.L
+
+        self.ADDEDMASS[:, 0:3, 0:3] = self.ADDEDMASS[:, 0:3, 0:3] * self.RO * self.VOL
+        self.ADDEDMASS[:, 0:3, 3:6] = self.ADDEDMASS[:, 0:3, 3:6] * self.RO * self.VOL * self.L
+        self.ADDEDMASS[:, 3:6, 0:3] = self.ADDEDMASS[:, 3:6, 0:3] * self.RO * self.VOL * self.L
+        self.ADDEDMASS[:, 3:6, 3:6] = self.ADDEDMASS[:, 3:6, 3:6] * self.RO * self.VOL * self.L * self.L
+
+        self.DAMPING[:, 0: 3, 0: 3] = self.DAMPING[:, 0: 3, 0: 3] * self.RO * self.VOL * np.sqrt(
+            np.divide(self.G, self.L))
+        self.DAMPING[:, 0: 3, 3: 6] = self.DAMPING[:, 0: 3, 3: 6] * self.RO * self.VOL * np.sqrt(self.G * self.L)
+        self.DAMPING[:, 3: 6, 0: 3] = self.DAMPING[:, 3: 6, 0: 3] * self.RO * self.VOL * np.sqrt(self.G * self.L)
+        self.DAMPING[:, 3: 6, 3: 6] = self.DAMPING[:, 3: 6, 3: 6] * self.RO * self.VOL * self.L * np.sqrt(
+            self.G * self.L)
 
         self.WAVEEX[:, :, 0: 3, 0: 3] = self.WAVEEX[:, :, 0: 3, 0: 3] * self.RO * self.VOL * self.G * np.divide(self.WA, self.L)
         self.WAVEEX[:, :, 3: 6, 0: 3] = self.WAVEEX[:, :, 3: 6, 0: 3] * self.RO * self.VOL * self.G * self.WA

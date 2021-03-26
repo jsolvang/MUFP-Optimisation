@@ -15,6 +15,12 @@ class MatrixCalculation:
         self.mass[3, 3] = mass.total * np.square(coord.RoG[0])
         self.mass[4, 4] = mass.total * np.square(coord.RoG[1])
         self.mass[5, 5] = mass.total * np.square(coord.RoG[2])
+        self.mass[4, 5] = -mass.total * np.square(coord.PoI[2])
+        self.mass[5, 4] = -mass.total * np.square(coord.PoI[2])
+        self.mass[0, 4] = mass.total * coord.COM[2]
+        self.mass[4, 0] = mass.total * coord.COM[2]
+        self.mass[1, 3] = -mass.total * coord.COM[2]
+        self.mass[3, 1] = -mass.total * coord.COM[2]
 
         # Stiffness Matrix
         front_front = abs(coord.COB[0]) + floater.dia_column / 2

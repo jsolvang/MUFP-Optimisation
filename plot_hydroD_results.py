@@ -51,7 +51,7 @@ def plot_hydroD_results(results, floater, env, plot_sync):
     plt.rcParams.update({'font.size': 15})
 
     plt.rcParams["figure.figsize"] = (20, 20)
-    styles = [['-b', '-g', '-r', '-b', '-g', '-r'],
+    styles = [['-*b', '-*g', '-*r', '-*b', '-*g', '-*r'],
               ['--b', '--g', '--r', '--b', '--g', '--r'],
               [':b', ':g', ':r', ':b', ':g', ':r'],
               ['-b', '-g', '-r', '-b', '-g', '-r'],
@@ -193,7 +193,7 @@ def plot_hydroD_results(results, floater, env, plot_sync):
 
     fig, axs = plt.subplots(2, 2)
     for jj in [0,1,2]:
-        axs[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
+        axs[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], styles[0][jj], label=legend_F[jj], linewidth=2, markersize=5)
         if plot_sync == 1:
             for xc in omega_x:
                 axs[0, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
@@ -205,7 +205,7 @@ def plot_hydroD_results(results, floater, env, plot_sync):
         axs[0, 0].grid(b=True, which='both', axis='both')
 
     for jj in [3,4,5]:
-        axs[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
+        axs[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], styles[0][jj], label=legend_F[jj], linewidth=2, markersize=5)
         if plot_sync == 1:
             for xc in omega_x:
                 axs[1, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')

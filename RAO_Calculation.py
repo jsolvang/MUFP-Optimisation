@@ -24,6 +24,8 @@ def calulate_RAOs(wave_disc, mass, ADDEDMASS, DAMPING, stiffness, WAVEEX, MOTION
 
     for jj in omega_index:
         X[0, jj, :] = np.dot(np.linalg.inv(Y[jj, :, :]), H[jj, :])
+        X[1, jj, :] = np.dot(np.linalg.inv(Y[jj, :, :]), H[jj, :])* wave_disc[jj, 4]
+        X[2, jj, :] = np.dot(np.linalg.inv(Y[jj, :, :]), H[jj, :])* np.square(wave_disc[jj, 4])
 
     if plot == 1:
         plt.rcParams["figure.figsize"] = (10, 20)

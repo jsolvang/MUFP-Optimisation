@@ -11,7 +11,7 @@ def plot_hydroD_results(results, floater, env, plot_sync):
     BIGGER_SIZE = 12
 
     if plot_sync == 1:
-        alpha_plot = 0.3
+        alpha_plot = 0.6
         L_x = np.zeros(21)
         k_x = np.zeros(21)
 
@@ -48,7 +48,7 @@ def plot_hydroD_results(results, floater, env, plot_sync):
         omega_y = np.delete(omega_y, np.where(omega_y < 0.5))
         omega_y = np.delete(omega_y, np.where(omega_y > 2.5))
 
-    plt.rcParams.update({'font.size': 15})
+    plt.rcParams.update({'font.size': 20})
 
     plt.rcParams["figure.figsize"] = (20, 20)
     styles = [['-*b', '-*g', '-*r', '-*b', '-*g', '-*r'],
@@ -76,197 +76,197 @@ def plot_hydroD_results(results, floater, env, plot_sync):
 
     legend_T = [r'$\theta_1$', r'$\theta_2$', r'$\theta_3$', r'$\theta_4$', r'$\theta_5$', r'$\theta_6$']
 
-    fig, axs = plt.subplots(2, 2)
+    fig, axs1 = plt.subplots(2, 2)
     for ii in np.linspace(0, 2, 3).astype(int):
         for jj in np.linspace(0, 2, 3).astype(int):
-            axs[0, 0].plot(results.wave_disc[:, 4], results.ADDEDMASS[:, ii, jj], styles[ii][jj], label=legend_A[ii][jj],
+            axs1[0, 0].plot(results.wave_disc[:, 4], results.ADDEDMASS[:, ii, jj], styles[ii][jj], label=legend_A[ii][jj],
                            linewidth=2, markersize=5)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[0, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[0, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-    axs[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    axs[0, 0].legend(loc="upper right")
-    axs[0, 0].set(xlabel='omega, rad/s', ylabel='Added Mass [kg]')
-    axs[0, 0].grid(b=True, which='both', axis='both')
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs1[0, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs1[0, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs1[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs1[0, 0].legend(loc="upper right")
+    axs1[0, 0].set(xlabel='omega, rad/s', ylabel='Added Mass [kg]')
+    axs1[0, 0].grid(b=True, which='both', axis='both')
 
 
     for ii in np.linspace(3, 5, 3).astype(int):
         for jj in np.linspace(0, 2, 3).astype(int):
-            axs[1, 0].plot(results.wave_disc[:, 4], results.ADDEDMASS[:, ii, jj], styles[ii][jj], label=legend_A[ii][jj],
+            axs1[1, 0].plot(results.wave_disc[:, 4], results.ADDEDMASS[:, ii, jj], styles[ii][jj], label=legend_A[ii][jj],
                            linewidth=2, markersize=5)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[1, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[1, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-    axs[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    axs[1, 0].legend(loc="upper right")
-    axs[1, 0].set(xlabel='omega, rad/s', ylabel='Added Mass [kg-m^2]')
-    axs[1, 0].grid(b=True, which='both', axis='both')
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs1[1, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs1[1, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs1[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs1[1, 0].legend(loc="upper right")
+    axs1[1, 0].set(xlabel='omega, rad/s', ylabel='Added Mass [kg-m^2]')
+    axs1[1, 0].grid(b=True, which='both', axis='both')
 
     for ii in np.linspace(0, 2, 3).astype(int):
         for jj in np.linspace(3, 5, 3).astype(int):
-            axs[1, 1].plot(results.wave_disc[:, 4], results.ADDEDMASS[:, ii, jj], styles[ii][jj], label=legend_A[ii][jj],
+            axs1[1, 1].plot(results.wave_disc[:, 4], results.ADDEDMASS[:, ii, jj], styles[ii][jj], label=legend_A[ii][jj],
                            linewidth=2, markersize=5)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[1, 1].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[1, 1].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-    axs[1, 1].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    axs[1, 1].legend(loc="upper right")
-    axs[1, 1].set(xlabel='omega, rad/s', ylabel='Added Mass [kg-m]')
-    axs[1, 1].grid(b=True, which='both', axis='both')
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs1[1, 1].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs1[1, 1].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs1[1, 1].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs1[1, 1].legend(loc="upper right")
+    axs1[1, 1].set(xlabel='omega, rad/s', ylabel='Added Mass [kg-m]')
+    axs1[1, 1].grid(b=True, which='both', axis='both')
 
     for ii in np.linspace(3, 5, 3).astype(int):
         for jj in np.linspace(3, 5, 3).astype(int):
-            axs[0, 1].plot(results.wave_disc[:, 4], results.ADDEDMASS[:, ii, jj], styles[ii][jj], label=legend_A[ii][jj],
+            axs1[0, 1].plot(results.wave_disc[:, 4], results.ADDEDMASS[:, ii, jj], styles[ii][jj], label=legend_A[ii][jj],
                            linewidth=2, markersize=5)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[0, 1].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[0, 1].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-    axs[0, 1].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    axs[0, 1].legend(loc="upper right")
-    axs[0, 1].set(xlabel='omega, rad/s', ylabel='Added Mass [kg-m]')
-    axs[0, 1].grid(b=True, which='both', axis='both')
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs1[0, 1].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs1[0, 1].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs1[0, 1].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs1[0, 1].legend(loc="upper right")
+    axs1[0, 1].set(xlabel='omega, rad/s', ylabel='Added Mass [kg-m]')
+    axs1[0, 1].grid(b=True, which='both', axis='both')
 
-    fig, axs = plt.subplots(2, 2)
+    fig, axs2 = plt.subplots(2, 2)
     for ii in np.linspace(0, 2, 3).astype(int):
         for jj in np.linspace(0, 2, 3).astype(int):
-            axs[0, 0].plot(results.wave_disc[:, 4], results.DAMPING[:, ii, jj], styles[ii][jj], label=legend_D[ii][jj],
+            axs2[0, 0].plot(results.wave_disc[:, 4], results.DAMPING[:, ii, jj], styles[ii][jj], label=legend_D[ii][jj],
                            linewidth=2, markersize=2)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[0, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[0, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-    axs[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    axs[0, 0].legend(loc="upper right")
-    axs[0, 0].set(xlabel='omega, rad/s', ylabel='Damping [kg/s]')
-    axs[0, 0].grid(b=True, which='both', axis='both')
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs2[0, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs2[0, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs2[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs2[0, 0].legend(loc="upper right")
+    axs2[0, 0].set(xlabel='omega, rad/s', ylabel='Damping [kg/s]')
+    axs2[0, 0].grid(b=True, which='both', axis='both')
 
     for ii in np.linspace(0, 2, 3).astype(int):
         for jj in np.linspace(3, 5, 3).astype(int):
-            axs[1, 1].plot(results.wave_disc[:, 4], results.DAMPING[:, ii, jj], styles[ii][jj], label=legend_D[ii][jj],
+            axs2[1, 1].plot(results.wave_disc[:, 4], results.DAMPING[:, ii, jj], styles[ii][jj], label=legend_D[ii][jj],
                            linewidth=2, markersize=2)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[1, 1].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[1, 1].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-    axs[1, 1].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    axs[1, 1].legend(loc="upper right")
-    axs[1, 1].set(xlabel='omega, rad/s', ylabel='Damping [kg-m/s^2]')
-    axs[1, 1].grid(b=True, which='both', axis='both')
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs2[1, 1].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs2[1, 1].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs2[1, 1].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs2[1, 1].legend(loc="upper right")
+    axs2[1, 1].set(xlabel='omega, rad/s', ylabel='Damping [kg-m/s^2]')
+    axs2[1, 1].grid(b=True, which='both', axis='both')
 
     for ii in np.linspace(3, 5, 3).astype(int):
         for jj in np.linspace(0, 2, 3).astype(int):
-            axs[1, 0].plot(results.wave_disc[:, 4], results.DAMPING[:, ii, jj], styles[ii][jj], label=legend_D[ii][jj],
+            axs2[1, 0].plot(results.wave_disc[:, 4], results.DAMPING[:, ii, jj], styles[ii][jj], label=legend_D[ii][jj],
                            linewidth=2, markersize=2)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[1, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[1, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-    axs[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    axs[1, 0].legend(loc="upper right")
-    axs[1, 0].set(xlabel='omega, rad/s', ylabel='Damping [kg-m/s]')
-    axs[1, 0].grid(b=True, which='both', axis='both')
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs2[1, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs2[1, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs2[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs2[1, 0].legend(loc="upper right")
+    axs2[1, 0].set(xlabel='omega, rad/s', ylabel='Damping [kg-m/s]')
+    axs2[1, 0].grid(b=True, which='both', axis='both')
 
     for ii in np.linspace(3, 5, 3).astype(int):
         for jj in np.linspace(3, 5, 3).astype(int):
-            axs[0, 1].plot(results.wave_disc[:, 4], results.DAMPING[:, ii, jj], styles[ii][jj], label=legend_D[ii][jj],
+            axs2[0, 1].plot(results.wave_disc[:, 4], results.DAMPING[:, ii, jj], styles[ii][jj], label=legend_D[ii][jj],
                            linewidth=2, markersize=2)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[0, 1].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[0, 1].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-    axs[0, 1].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    axs[0, 1].legend(loc="upper right")
-    axs[0, 1].set(xlabel='omega, rad/s', ylabel='Damping [kg-m/s]')
-    axs[0, 1].grid(b=True, which='both', axis='both')
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs2[0, 1].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs2[0, 1].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs2[0, 1].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs2[0, 1].legend(loc="upper right")
+    axs2[0, 1].set(xlabel='omega, rad/s', ylabel='Damping [kg-m/s]')
+    axs2[0, 1].grid(b=True, which='both', axis='both')
 
-    fig, axs = plt.subplots(2, 2)
+    fig, axs3 = plt.subplots(2, 2)
     for jj in [0,1,2]:
-        axs[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], styles[0][jj], label=legend_F[jj], linewidth=2, markersize=5)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[0, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[0, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-        axs[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        axs[0, 0].legend(loc="upper right")
-        axs[0, 0].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force Translation [N]')
-        axs[0, 0].grid(b=True, which='both', axis='both')
+        axs3[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], styles[0][jj], label=legend_F[jj], linewidth=2, markersize=5)
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs3[0, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs3[0, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs3[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs3[0, 0].legend(loc="upper right")
+    axs3[0, 0].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force Translation [N]')
+    axs3[0, 0].grid(b=True, which='both', axis='both')
 
     for jj in [3,4,5]:
-        axs[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], styles[0][jj], label=legend_F[jj], linewidth=2, markersize=5)
-        if plot_sync == 1:
-            for xc in omega_x:
-                axs[1, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
-            for xx in omega_y:
-                axs[1, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
-        axs[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        axs[1, 0].legend(loc="upper right")
-        axs[1, 0].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force Rotation [Nm]')
-        axs[1, 0].grid(b=True, which='both', axis='both')
+        axs3[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 2], styles[0][jj], label=legend_F[jj], linewidth=2, markersize=5)
+    if plot_sync == 1:
+        for xc in omega_x:
+            axs3[1, 0].axvline(x=xc, linestyle='--', alpha=alpha_plot, linewidth=2, color='c')
+        for xx in omega_y:
+            axs3[1, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
+    axs3[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    axs3[1, 0].legend(loc="upper right")
+    axs3[1, 0].set(xlabel='omega, rad/s', ylabel='0 Deg Exciting Force Rotation [Nm]')
+    axs3[1, 0].grid(b=True, which='both', axis='both')
 
     for jj in [0,2]:
-        axs[0, 1].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 3], '*', label=legend_F[jj], linewidth=2, markersize=5)
-        # if plot_sync == 1:
-            # axs[0, 1].plot(omega_list, phi_x, linestyle='-', alpha=0.3, linewidth=2)
-        axs[0, 1].legend(loc="upper right")
-        axs[0, 1].set(xlabel='omega, rad/s', ylabel='0 Deg - Phase Shift - Translation [N]')
-        axs[0, 1].grid(b=True, which='both', axis='both')
+        axs3[0, 1].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 3], '*', label=legend_F[jj], linewidth=2, markersize=5)
+    # if plot_sync == 1:
+        # axs[0, 1].plot(omega_list, phi_x, linestyle='-', alpha=0.3, linewidth=2)
+    axs3[0, 1].legend(loc="upper right")
+    axs3[0, 1].set(xlabel='omega, rad/s', ylabel='0 Deg - Phase Shift - Translation [N]')
+    axs3[0, 1].grid(b=True, which='both', axis='both')
 
     for jj in [4]:
-        axs[1, 1].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 3], '*g', label=legend_F[jj], linewidth=2, markersize=5)
-        # if plot_sync == 1:
-            # axs[1, 1].plot(omega_list,phi_x, linestyle='-', alpha=0.3, linewidth=2)
-        axs[1, 1].legend(loc="upper right")
-        axs[1, 1].set(xlabel='omega, rad/s', ylabel='0 Deg - Phase Shift - Rotation [Nm]')
-        axs[1, 1].grid(b=True, which='both', axis='both')
+        axs3[1, 1].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 3], '*g', label=legend_F[jj], linewidth=2, markersize=5)
+    # if plot_sync == 1:
+        # axs[1, 1].plot(omega_list,phi_x, linestyle='-', alpha=0.3, linewidth=2)
+    axs3[1, 1].legend(loc="upper right")
+    axs3[1, 1].set(xlabel='omega, rad/s', ylabel='0 Deg - Phase Shift - Rotation [Nm]')
+    axs3[1, 1].grid(b=True, which='both', axis='both')
 
+#
+#    fig, axs4 = plt.subplots(2, 2)
+#    for jj in [0,2]:
+#        axs4[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
+#        if plot_sync == 1:
+#            for xc in omega_y:
+#                axs4[0, 0].axvline(x=xc, linestyle='-', alpha=0.3, linewidth=2)
+#        axs4[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+#        axs4[0, 0].legend(loc="upper right")
+#        axs4[0, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force Translation [N]')
+#        axs4[0, 0].grid(b=True, which='both', axis='both')
+#
+#    for jj in [4]:
+#        axs4[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], '-g', label=legend_T[jj], linewidth=2, markersize=2)
+#        if plot_sync == 1:
+#            for xc in omega_y:
+#                axs4[1, 0].axvline(x=xc, linestyle='-', alpha=0.3, linewidth=2)
+#        axs4[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+#        axs4[1, 0].legend(loc="upper right")
+#        axs4[1, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force Rotation [N]')
+#        axs4[1, 0].grid(b=True, which='both', axis='both')
+#
+#    for jj in [0,2]:
+#        axs4[0, 1].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 3], '*', label=legend_F[jj], linewidth=2, markersize=5)
+#        # if plot_sync == 1:
+#            # axs[0, 1].plot(omega_list, phi_y, linestyle='-', alpha=0.3, linewidth=2)
+#        axs4[0, 1].legend(loc="upper right")
+#        axs4[0, 1].set(xlabel='omega, rad/s', ylabel='90 Deg - Phase Shift -  Translation [N]')
+#        axs4[0, 1].grid(b=True, which='both', axis='both')
 
-    fig, axs = plt.subplots(2, 2)
-    for jj in [0,2]:
-        axs[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
-        if plot_sync == 1:
-            for xc in omega_y:
-                axs[0, 0].axvline(x=xc, linestyle='-', alpha=0.3, linewidth=2)
-        axs[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        axs[0, 0].legend(loc="upper right")
-        axs[0, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force Translation [N]')
-        axs[0, 0].grid(b=True, which='both', axis='both')
-
-    for jj in [4]:
-        axs[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], '-g', label=legend_T[jj], linewidth=2, markersize=2)
-        if plot_sync == 1:
-            for xc in omega_y:
-                axs[1, 0].axvline(x=xc, linestyle='-', alpha=0.3, linewidth=2)
-        axs[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        axs[1, 0].legend(loc="upper right")
-        axs[1, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force Rotation [N]')
-        axs[1, 0].grid(b=True, which='both', axis='both')
-
-    for jj in [0,2]:
-        axs[0, 1].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 3], '*', label=legend_F[jj], linewidth=2, markersize=5)
-        # if plot_sync == 1:
-            # axs[0, 1].plot(omega_list, phi_y, linestyle='-', alpha=0.3, linewidth=2)
-        axs[0, 1].legend(loc="upper right")
-        axs[0, 1].set(xlabel='omega, rad/s', ylabel='90 Deg - Phase Shift -  Translation [N]')
-        axs[0, 1].grid(b=True, which='both', axis='both')
-
-    for jj in [4]:
-        axs[1, 1].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 3], '*g', label=legend_F[jj], linewidth=2, markersize=5)
-        # if plot_sync == 1:
-            # axs[1, 1].plot(omega_list, phi_y, linestyle='-', alpha=0.3, linewidth=2)
-        axs[1, 1].legend(loc="upper right")
-        axs[1, 1].set(xlabel='omega, rad/s', ylabel='90 Deg - Phase Shift - Rotation [N]')
-        axs[1, 1].grid(b=True, which='both', axis='both')
+#    for jj in [4]:
+#        axs4[1, 1].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 3], '*g', label=legend_F[jj], linewidth=2, markersize=5)
+#        # if plot_sync == 1:
+#            # axs[1, 1].plot(omega_list, phi_y, linestyle='-', alpha=0.3, linewidth=2)
+#        axs4[1, 1].legend(loc="upper right")
+#        axs4[1, 1].set(xlabel='omega, rad/s', ylabel='90 Deg - Phase Shift - Rotation [N]')
+#        axs4[1, 1].grid(b=True, which='both', axis='both')
 

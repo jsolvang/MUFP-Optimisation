@@ -15,8 +15,8 @@ class MatrixCalculation:
         self.mass[3, 3] = mass.total * np.square(coord.RoG[0])
         self.mass[4, 4] = mass.total * np.square(coord.RoG[1])
         self.mass[5, 5] = mass.total * np.square(coord.RoG[2])
-        self.mass[4, 5] = -mass.total * np.square(coord.PoI[2])
-        self.mass[5, 4] = -mass.total * np.square(coord.PoI[2])
+        self.mass[3, 5] = -mass.total * np.square(coord.PoI[1])
+        self.mass[5, 3] = -mass.total * np.square(coord.PoI[1])
         self.mass[0, 4] = mass.total * coord.COM[2]
         self.mass[4, 0] = mass.total * coord.COM[2]
         self.mass[1, 3] = -mass.total * coord.COM[2]
@@ -37,22 +37,22 @@ class MatrixCalculation:
         back_centre = abs(coord.columnbackR[1] - coord.COB[0])
         left_centre = abs(coord.columnbackL[2])
         right_centre = abs(coord.columnbackR[2])
-        buoy_mass = coord.COM[1] - coord.COB[1]
+        buoy_mass = coord.COM[2] - coord.COB[2]
 
         # Recording output for trouble shooting
-        self.distances = [["Front Front", front_front],
-                          ["Front Back", front_back],
-                          ["Back Front", back_front],
-                          ["Back Back", back_back],
-                          ["Left Left", left_left],
-                          ["Left Right", left_right],
-                          ["Right Left", right_left],
-                          ["Right Right", right_right],
-                          ["Front Centre", front_centre],
-                          ["Back Centre", back_centre],
-                          ["Left Centre", left_centre],
-                          ["Right Centre", right_centre],
-                          ["Buoy Mass", buoy_mass]]
+        self.distances = {"Front Front": front_front,
+                          "Front Back": front_back,
+                          "Back Front": back_front,
+                          "Back Back": back_back,
+                          "Left Left": left_left,
+                          "Left Right": left_right,
+                          "Right Left": right_left,
+                          "Right Right": right_right,
+                          "Front Centre": front_centre,
+                          "Back Centre": back_centre,
+                          "Left Centre": left_centre,
+                          "Right Centre": right_centre,
+                          "CoB to CoM": buoy_mass}
 
         # Calculating water plane moment of inertia using the parallel axis theorem
         I44_1 = (np.pi / 64) * np.power(floater.dia_column, 4) + np.divide(np.pi * np.square(floater.dia_column),

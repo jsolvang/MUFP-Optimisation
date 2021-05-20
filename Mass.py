@@ -18,6 +18,10 @@ class Mass:
                      + (area.heave_top * floater.thickness * rho.steel) \
                      + (area.heave * floater.thickness * rho.steel)
 
+        bracing_cc = (np.pi*0.25**2) - (np.pi*0.2**2)
+        bracing_length = 2 * np.sqrt(floater.x_space**2 +  floater.y_space**2/2) + floater.y_space
+        self.bracing = bracing_cc*bracing_length*rho.steel
+
         # Total un-ballasted mass of platform
         float = 3 * (self.column + self.heave)
         self.turbines = 2 * (self.hub + self.nacelle + self.rotor + self.tower)
@@ -26,7 +30,7 @@ class Mass:
         # Calculating required ballasting mass
         self.ballast_total = buoy.total - total
         self.floater = float + self.ballast_total
-        self.total = self.turbines + self.floater
+        self.total = self.turbines + self.floater + self.bracing
 
     def _turbine_tower_calculation(self, floater, rho):
         # Predetermined turbine parameters - Change these when structural components are taken into acccount
@@ -39,7 +43,7 @@ class Mass:
 
         # Pythagoras to find the tower length
         tower_length = np.sqrt(
-            np.square(np.divide(floater.hub_space / 2 - floater.x_space, 2)) + np.square(floater.hub_height))
+            np.square(np.divide(floater.hub_space / 2 - floater.y_space, 2)) + np.square(floater.hub_height))
 
         # Tower area found by calculating the area of a tapered column. Subtracting the "in" (internal) volume.
         tower_volume_out = np.divide(np.pi, 3) * tower_length * \

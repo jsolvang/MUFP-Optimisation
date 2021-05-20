@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 import pickle
 
 class InterpolateParameters:
-    def __init__(self, pull, interp_at):
+    def __init__(self, interp_sims, interp_at):
         results = []
 
-        for i in np.linspace(0, len(pull[:, 1]) - 1, 3).astype(int):
+        for i in np.linspace(0, len(interp_sims[:, 1]) - 1, len(interp_sims)).astype(int):
             file_loc = r'C:\Users\Joar\Documents\1_Education\NTNU\pickle_files'
-            file_name = "\sim_x_%d_y_%d_D%d" % (pull[i, 0], pull[i, 1], pull[i, 2])
+            file_name = "\sim_x_%d_y_%d_D%d" % (interp_sims[i, 0], interp_sims[i, 1], interp_sims[i, 2])
             file_path = file_loc + file_name
             infile = open(file_path, 'rb')
             results.append(pickle.load(infile))
@@ -19,34 +19,48 @@ class InterpolateParameters:
         interp_ADDEDMASS = np.zeros(shape=(int(results[1].numwavelengths), 6, 6))
         interp_DAMPING = np.zeros(shape=(int(results[1].numwavelengths), 6, 6))
         interp_WAVEEX = np.zeros(shape=(2, int(results[1].numwavelengths), 6, 6))
+        interp_motions = np.zeros(shape=(int(results[1].numheadangles), int(results[1].numwavelengths), 6, 4))
+        self.wave_disc = np.zeros(shape=(int(results[1].numheadangles), int(results[1].numwavelengths), 6, 4))
 
         for nn in np.linspace(0, int(results[1].numwavelengths) - 1, int(results[1].numwavelengths)).astype(int):
             for mm in np.linspace(0, 5, 6).astype(int):
                 for kk in np.linspace(0, 5, 6).astype(int):
-                    interp_ADDEDMASS[nn, mm, kk] = np.interp(interp_at[1],
-                                                             [pull[0, interp_at[0]], pull[2, interp_at[0]]],
+                    interp_ADDEDMASS[nn, mm, kk] = np.interp(interp_at[0],
+                                                             [interp_sims[0, 0], interp_sims[1, 0]],
                                                              [results[0].ADDEDMASS[nn, mm, kk],
-                                                              results[2].ADDEDMASS[nn, mm, kk]])
-                    interp_DAMPING[nn, mm, kk] = np.interp(interp_at[1],
-                                                           [pull[0, interp_at[0]], pull[2, interp_at[0]]],
+                                                              results[1].ADDEDMASS[nn, mm, kk]])
+                    interp_DAMPING[nn, mm, kk] = np.interp(interp_at[0],
+                                                           [interp_sims[0, 0], interp_sims[1, 0]],
                                                            [results[0].DAMPING[nn, mm, kk],
-                                                            results[2].DAMPING[nn, mm, kk]])
+                                                            results[1].DAMPING[nn, mm, kk]])
 
         for nn in np.linspace(0, int(results[0].numwavelengths) - 1, int(results[0].numwavelengths)).astype(int):
             for mm in np.linspace(0, 5, 6).astype(int):
                 for kk in np.linspace(0, 3, 4).astype(int):
-                    interp_WAVEEX[0, nn, mm, kk] = np.interp(interp_at[1],
-                                                             [pull[0, interp_at[0]], pull[2, interp_at[0]]],
+                    interp_WAVEEX[0, nn, mm, kk] = np.interp(interp_at[0],
+                                                             [interp_sims[0, 0], interp_sims[1, 0]],
                                                              [results[0].WAVEEX[0, nn, mm, kk],
-                                                              results[2].WAVEEX[0, nn, mm, kk]])
-                    interp_WAVEEX[1, nn, mm, kk] = np.interp(interp_at[1],
-                                                             [pull[0, interp_at[0]], pull[2, interp_at[0]]],
+                                                              results[1].WAVEEX[0, nn, mm, kk]])
+                    interp_WAVEEX[1, nn, mm, kk] = np.interp(interp_at[0],
+                                                             [interp_sims[0, 0], interp_sims[1, 0]],
                                                              [results[0].WAVEEX[1, nn, mm, kk],
-                                                              results[2].WAVEEX[1, nn, mm, kk]])
-        self.results = results
+                                                              results[1].WAVEEX[1, nn, mm, kk]])
+
+        for pp in np.linspace(0, len(results[0].MOTIONS[:,0,0,0])-1, len(results[0].MOTIONS[:,0,0,0])).astype(int):
+            for nn in np.linspace(0, int(results[0].numwavelengths) - 1, int(results[0].numwavelengths)).astype(int):
+                for mm in np.linspace(0, 5, 6).astype(int):
+                    for kk in np.linspace(0, 3, 4).astype(int):
+                        interp_motions[pp, nn, mm, kk] = np.interp(interp_at[0],
+                                                                 [interp_sims[0, 0], interp_sims[1, 0]],
+                                                                 [results[0].MOTIONS[pp, nn, mm, kk],
+                                                                  results[1].MOTIONS[pp, nn, mm, kk]])
+
+        #self.results = results
         self.ADDEDMASS = interp_ADDEDMASS
         self.DAMPING = interp_DAMPING
         self.WAVEEX = interp_WAVEEX
+        self.MOTIONS = interp_motions
+        self.wave_disc = results[0].wave_disc
 
     def _plot_interpolation(self, pull, interp_at):
 
@@ -64,6 +78,7 @@ class InterpolateParameters:
                             ['Added Mass [KG-m] (DOF:Yaw)']]
 
         plt.rcParams["figure.figsize"] = (20, 20)
+        plt.rcParams.update({'font.size': 20})
         fig, axs = plt.subplots(6, 1)
         for ii in np.linspace(0, 5, 6).astype(int):
             axs[ii].plot(results[0].wave_disc[:, 4], results[0].ADDEDMASS[:, ii, ii], '-+m',

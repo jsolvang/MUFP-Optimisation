@@ -12,8 +12,9 @@ class InterpolateResults:
         self.DOF = [0 ,1 ,2 ,3 ,4 ,5]
         self.directions = [0 ,1]
 
-        for jj in np.linspace(0, len(self.wave_disc[0, :] ) -1, len(self.wave_disc[0, :])).astype(int):
-            self.wave_disc[:, jj] = np.interp(f, wave_disc_og[:, 4], wave_disc_og[:, jj])
+        self.wave_disc[:, 4] = f
+        #for jj in np.linspace(0, len(self.wave_disc[0, :] ) -1, len(self.wave_disc[0, :])).astype(int):
+        #    self.wave_disc[:, jj] = np.interp(f, wave_disc_og[:, 4], wave_disc_og[:, jj])
 
         for direct in self.directions:
             for dof in self.DOF:

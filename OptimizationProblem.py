@@ -30,8 +30,6 @@ def OptimizationProblem(x_space, y_space, dia_column):
     mass = Mass(mufp, csa, buoy, rho)
     coord = GeneralisedCoordinateSystem(mufp, csa, mass, rho, buoy, env)
     matrix = MatrixCalculation(coord, mass, mufp, rho, env, csa, buoy)
-    print(matrix.mass[4,4])
-    print(matrix.stiffness[4,4])
     # Adding artificial stiffness in DOF without any
     matrix.stiffness[0, 0] = 1e6
     matrix.stiffness[1, 1] = 1e6
@@ -51,7 +49,7 @@ def OptimizationProblem(x_space, y_space, dia_column):
     results = []
 
     for i in np.linspace(0, len(interp_inputs[:, 1]) - 1, len(interp_inputs)).astype(int):
-        file_loc = r'C:\Users\Joar\Documents\1_Education\NTNU\pickle_files'
+        file_loc = r'E:\pickle_files'
         file_name = "\sim_x_%d_y_%d_D%d" % (interp_inputs[i, 0], interp_inputs[i, 1], interp_inputs[i, 2])
         file_path = file_loc + file_name
         infile = open(file_path, 'rb')
@@ -59,6 +57,13 @@ def OptimizationProblem(x_space, y_space, dia_column):
         infile.close()
 
     sim = Interpolate2d(results, interp_inputs, design)
+
+    # Adding 5% critical damping
+    #if matrix.stiffness[4,4] > 0:
+    #    sim.DAMPING += (1/20)*2*np.sqrt(matrix.stiffness * (matrix.mass+sim.ADDEDMASS))
+
+    nat_freq_undamped = np.sqrt(np.diag(matrix.stiffness) / np.diag(matrix.mass + sim.ADDEDMASS[0,:,:]))
+    nat_freq_damped = nat_freq_undamped*np.sqrt(1-0.05)
 
     # Defining frequencies of interest
     df = 1 / 3600
@@ -84,7 +89,7 @@ def OptimizationProblem(x_space, y_space, dia_column):
     s_wind = np.zeros(shape=(len(f), 8))
     s_wind[:, 0] = P_wind
     s_wind[:, 4] = P_wind
-    tz_wind, sa_wind, n_mpm_wind, mpm_wind, _, _, _, _ = windspectrumanalysis(sim, matrix, plot, mufp, coord, df_rad, f, Tr, s_wind)
+    tz_wind, sa_wind, n_mpm_wind, mpm_wind, wind_response, RAO_per_unit_force, Y, H = windspectrumanalysis(sim, matrix, plot, mufp, coord, df_rad, f, Tr, s_wind)
     sa_wind = np.nan_to_num(sa_wind)
     mpm_wind = np.nan_to_num(mpm_wind)
 
@@ -101,4 +106,4 @@ def OptimizationProblem(x_space, y_space, dia_column):
     mpm[:, 3:6] *= (180 / np.pi)
     sa[:, 3:6] *= (180 / np.pi)
 
-    return tz_wind, n_mpm_wind, sa_wind, mpm_wind, tz_wave, n_mpm_wave, sa_wave, mpm_wave, sa, mpm
+    return tz_wave, n_mpm_wave, sa_wave, mpm_wave, Y, H, RAO_per_unit_force, matrix.stiffness[4,4], nat_freq_damped, nat_freq_undamped

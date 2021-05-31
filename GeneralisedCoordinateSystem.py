@@ -8,6 +8,7 @@ class GeneralisedCoordinateSystem:
         self._determine_buoy_coordinates(floater, area, mass, rho, buoy)
         self._allocate_necessary_ballasting(floater, area, mass, rho)
         self._calculate_hydrod_inputs(floater, area, mass, rho, buoy, env)
+        self._calculate_individual_column_mass_df()
 
     def _determine_mass_coordinates(self, floater, area, mass, rho, buoy):
         # Creating DataFrame of system mass coordinates using input variables in FloaterParameter object
@@ -95,6 +96,8 @@ class GeneralisedCoordinateSystem:
         # Calculating the required height in heave plate for front and back ballasting
         ballast_heightF = mass.ballast_front / (area.heave * rho.concrete)
         ballast_heightB = mass.ballast_back / (area.heave * rho.concrete)
+        self.ballast_heightF = ballast_heightF
+        self.ballast_heightB = ballast_heightB
 
         # Assigning ballast weight and COM
         if ballast_heightF > floater.heave_height:
@@ -131,26 +134,6 @@ class GeneralisedCoordinateSystem:
         self.mass_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
         self.mass_df.set_index('Component', inplace=True)
         self.mass_df['weight_contribution'] = np.divide(self.mass_df['Mass [kg]'], np.sum(self.mass_df['Mass [kg]']))
-
-        # Creating mass dataframes for each column
-
-        self.front_column_df = pd.DataFrame(
-            [self.ballastfront, self.columnfront, self.heavefront])
-        self.front_column_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
-        self.front_column_df.set_index('Component', inplace=True)
-        self.front_column_df['weight_contribution'] = np.divide(self.front_column_df['Mass [kg]'], np.sum(self.front_column_df['Mass [kg]']))
-
-        self.left_column_df = pd.DataFrame(
-            [self.ballastbackL, self.columnbackL,self.heavebackL, self.hubL, self.towerL])
-        self.left_column_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
-        self.left_column_df.set_index('Component', inplace=True)
-        self.left_column_df['weight_contribution'] = np.divide(self.left_column_df['Mass [kg]'], np.sum(self.left_column_df['Mass [kg]']))
-
-        self.right_column_df = pd.DataFrame(
-            [self.ballastbackR, self.columnbackR, self.heavebackR, self.hubR, self.towerR])
-        self.right_column_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
-        self.right_column_df.set_index('Component', inplace=True)
-        self.right_column_df['weight_contribution'] = np.divide(self.right_column_df['Mass [kg]'], np.sum(self.right_column_df['Mass [kg]']))
 
 
     def _calculate_hydrod_inputs(self, floater, area, mass, rho, buoy, env):
@@ -193,3 +176,30 @@ class GeneralisedCoordinateSystem:
         self.PoI_df['Ixz'] = self.PoI_df['x'] * self.PoI_df['z'] * self.PoI_df['Mass [kg]']
         self.PoI = [sum(self.PoI_df['Ixy']) / mass.total, sum(self.PoI_df['Ixz']) / mass.total,
                     sum(self.PoI_df['Ixy']) / mass.total]
+
+    def _calculate_individual_column_mass_df(self):
+        # Creating mass dataframes for each column
+
+        self.front_column_df = pd.DataFrame(
+            [self.ballastfront, self.columnfront, self.heavefront])
+        self.front_column_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
+        self.front_column_df.set_index('Component', inplace=True)
+        self.front_column_df['weight_contribution'] = np.divide(self.front_column_df['Mass [kg]'], np.sum(self.front_column_df['Mass [kg]']))
+        self.front_column_df['x'] += self.COM[0]
+        self.front_column_df['y'] += self.COM[1]
+
+        self.left_column_df = pd.DataFrame(
+            [self.ballastbackL, self.columnbackL,self.heavebackL, self.hubL, self.towerL])
+        self.left_column_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
+        self.left_column_df.set_index('Component', inplace=True)
+        self.left_column_df['weight_contribution'] = np.divide(self.left_column_df['Mass [kg]'], np.sum(self.left_column_df['Mass [kg]']))
+        self.left_column_df['x'] += self.COM[0]
+        self.left_column_df['y'] += self.COM[1]
+
+        self.right_column_df = pd.DataFrame(
+            [self.ballastbackR, self.columnbackR, self.heavebackR, self.hubR, self.towerR])
+        self.right_column_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
+        self.right_column_df.set_index('Component', inplace=True)
+        self.right_column_df['weight_contribution'] = np.divide(self.right_column_df['Mass [kg]'], np.sum(self.right_column_df['Mass [kg]']))
+        self.right_column_df['x'] += self.COM[0]
+        self.right_column_df['y'] += self.COM[1]

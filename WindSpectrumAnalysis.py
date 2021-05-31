@@ -7,12 +7,13 @@ import numpy as np
 
 def windspectrumanalysis(sim, matrix, plot, mufp, coord, df, f, Tr, s_wind):
     # Declaring variable unit force of unit [N/N] and [Nm/m]
-    unit_force = np.ones(shape=(2, len(f), 6, 4))
-    unit_force[:, :, 3:6, 0] = mufp.hub_height
-    unit_force[:, :, 3:6, 1] = mufp.hub_height
+    unit_force = np.ones(shape=(2, len(f), 6, 4)) + 0j
+    unit_force[:, :, 3:6, 0] = mufp.hub_height + 0j
+    unit_force[:, :, 3:6, 1] = mufp.hub_height + 0j
 
     # Interpolating Results to new frequency range
     sim_interp = InterpolateResults(sim.wave_disc, sim.WAVEEX, sim.MOTIONS, sim.ADDEDMASS, sim.DAMPING, f)
+
 
     # Calculating RAO per unit force
     RAO_per_unit_force, Y, H, _ = calulate_RAOs(sim_interp.wave_disc, matrix.mass, sim_interp.ADDEDMASS, sim_interp.DAMPING,

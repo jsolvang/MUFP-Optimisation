@@ -5,9 +5,9 @@ import numpy as np
 class Mass:
     def __init__(self, floater, area, buoy, rho):
         # Turbine masses taken from the NREL 5MW reference turbine
-        self.hub = 56780
-        self.nacelle = 240000
-        self.rotor = 110000
+        self.hub = 0 #56780
+        self.nacelle = 0 #240000
+        self.rotor = 0 #110000
         self._turbine_tower_calculation(floater, rho)
 
         # Column mass
@@ -20,7 +20,7 @@ class Mass:
 
         bracing_cc = (np.pi*0.25**2) - (np.pi*0.2**2)
         bracing_length = 2 * np.sqrt(floater.x_space**2 +  floater.y_space**2/2) + floater.y_space
-        self.bracing = bracing_cc*bracing_length*rho.steel
+        self.bracing = 0 #bracing_cc*bracing_length*rho.steel
 
         # Total un-ballasted mass of platform
         float = 3 * (self.column + self.heave)
@@ -50,4 +50,4 @@ class Mass:
                            (np.square(r_bot_outer) + np.square(r_out) + r_bot_outer * r_out)
         tower_volume_in = np.divide(np.pi, 3) * tower_length * \
                           (np.square(r_top_outer) + np.square(r_in) + r_top_outer * r_in)
-        self.tower = (tower_volume_out - tower_volume_in) * rho.steel
+        self.tower = 0 #(tower_volume_out - tower_volume_in) * rho.steel

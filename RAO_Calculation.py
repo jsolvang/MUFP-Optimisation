@@ -6,10 +6,15 @@ def calculate_column_raos(RAO, matrix, column):
     column_rao = RAO
 
     if column == 'front':
+        column_rao[:, :, 1] = RAO[:, :, 1] + RAO[:, :, 5] * matrix.distances['Front Centre']
         column_rao[:, :, 2] = RAO[:, :, 2] + RAO[:, :, 4] * matrix.distances['Front Centre']
     elif column == 'left':
+        column_rao[:, :, 0] = RAO[:, :, 0] + RAO[:, :, 5] * matrix.distances['Left Centre']
+        column_rao[:, :, 1] = RAO[:, :, 1] + RAO[:, :, 5] * matrix.distances['Back Centre']
         column_rao[:, :, 2] = RAO[:, :, 2] - RAO[:, :, 3] * matrix.distances['Left Centre'] - RAO[:, :, 4] * matrix.distances['Back Centre']
     elif column == 'right':
+        column_rao[:, :, 0] = RAO[:, :, 0] - RAO[:, :, 5] * matrix.distances['Right Centre']
+        column_rao[:, :, 1] = RAO[:, :, 1] + RAO[:, :, 5] * matrix.distances['Back Centre']
         column_rao[:, :, 2] = RAO[:, :, 2] + RAO[:, :, 3] * matrix.distances['Right Centre'] - RAO[:, :, 4] * matrix.distances['Back Centre']
     else:
         print('Invalid Column Input')

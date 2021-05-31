@@ -3,16 +3,17 @@ import numpy as np
 
 class ReadWadamLis:
 
-    def __init__(self, HydroD_result):
+    def __init__(self, HydroD_result, sectional_loads, reflection, fixed):
         self.path = HydroD_result + "\WADAM1.LIS"
-        self._extract_results()
+        self._extract_results(sectional_loads, reflection, fixed)
 
-    def _extract_results(self):
+    def _extract_results(self, sectional_loads, reflection, fixed):
         hydroD_results = open(self.path, 'r').readlines()
-
         ii = 1
         found = 0
         self.mass_matrix = np.zeros(shape=(6, 6))
+        self.COG = np.zeros(3)
+        self.CFM = np.zeros(3)
 
         while found == 0:
             k = hydroD_results[ii].find('     MASS PROPERTIES AND STRUCTURAL DATA:\n')
@@ -20,64 +21,92 @@ class ReadWadamLis:
             if k != -1:
                 found = 1
                 self.mass = float(hydroD_results[ii + 2].split()[6])
-                self.COG = [float(hydroD_results[ii + 4].split()[5]), float(hydroD_results[ii + 5].split()[2]),
-                            float(hydroD_results[ii + 6].split()[2])]
+                if hydroD_results[ii + 4].split()[4] == "=":
+                    self.COG[0] = float(hydroD_results[ii + 4].split()[5])
+                else:
+                    self.COG[0] = float(hydroD_results[ii + 4].split()[4].replace("=", ""))
+                if hydroD_results[ii + 5].split()[1] == "=":
+                    self.COG[1] = float(hydroD_results[ii + 5].split()[2])
+                else:
+                    self.COG[1] = float(hydroD_results[ii + 5].split()[1].replace("=", ""))
+                if hydroD_results[ii + 6].split()[1] == "=":
+                    self.COG[2] = float(hydroD_results[ii + 6].split()[2])
+                else:
+                    self.COG[2] = float(hydroD_results[ii + 6].split()[1].replace("=", ""))
+
                 self.RoG = [float(hydroD_results[ii + 7].split()[6]), float(hydroD_results[ii + 8].split()[6]),
                             float(hydroD_results[ii + 9].split()[6])]
-                self.CFM = [float(hydroD_results[ii + 10].split()[5]), float(hydroD_results[ii + 11].split()[5]),
-                            float(hydroD_results[ii + 12].split()[5])]
 
-
-        ii = 1
-        found = 0
-
-        while found == 0:
-            k = hydroD_results[ii].find(' 4.2 STATIC  RESULTS\n')
-            ii += 1
-            if k != -1:
-                found = 1
-                M1 = np.float_(hydroD_results[ii + 8].split()[1:7])
-                M2 = np.float_(hydroD_results[ii + 9].split()[1:7])
-                M3 = np.float_(hydroD_results[ii + 10].split()[1:7])
-                M4 = np.float_(hydroD_results[ii + 11].split()[1:7])
-                M5 = np.float_(hydroD_results[ii + 12].split()[1:7])
-                M6 = np.float_(hydroD_results[ii + 13].split()[1:7])
-                self.mass_matrix = np.array([M1, M2, M3, M4, M5, M6])
-
-                K1 = np.float_(hydroD_results[ii + 20].split()[1:7])
-                K2 = np.float_(hydroD_results[ii + 21].split()[1:7])
-                K3 = np.float_(hydroD_results[ii + 22].split()[1:7])
-                K4 = np.float_(hydroD_results[ii + 23].split()[1:7])
-                K5 = np.float_(hydroD_results[ii + 24].split()[1:7])
-                K6 = np.float_(hydroD_results[ii + 25].split()[1:7])
-                self.stiffness_matrix = np.array([K1, K2, K3, K4, K5, K6])
-
-        ii = 1
-        found = 0
-
-        while found == 0:
-            k = hydroD_results[ii].find('     HYDROSTATIC DATA:\n')
-            ii += 1
-            if k != -1:
-                found = 1
-                self.displaced_volume = float(hydroD_results[ii + 3].split()[6])
-                self.WPA = float(hydroD_results[ii + 5].split()[5])
-                if hydroD_results[ii + 7].split()[4] == "=":
-                    self.COB = [float(hydroD_results[ii + 7].split()[5]),
-                                float(hydroD_results[ii + 8].split()[2]),
-                                float(hydroD_results[ii + 9].split()[1].replace("=", ""))]
-                else:
-                    self.COB = [float(hydroD_results[ii + 7].split()[4].replace("=", "")),
-                                float(hydroD_results[ii + 8].split()[2]),
-                                float(hydroD_results[ii + 9].split()[1].replace("=", ""))]
                 if hydroD_results[ii + 10].split()[4] == "=":
-                    self.meta_centric_height_transverse = float(hydroD_results[ii + 10].split()[5])
+                    self.CFM[0] = float(hydroD_results[ii + 10].split()[5])
                 else:
-                    self.meta_centric_height_transverse = float(hydroD_results[ii + 10].split()[4].replace("=", ""))
+                    self.CFM[0] = float(hydroD_results[ii + 10].split()[4].replace("=", ""))
                 if hydroD_results[ii + 11].split()[4] == "=":
-                    self.meta_centric_height_longitudinal = float(hydroD_results[ii + 11].split()[5])
+                    self.CFM[1] = float(hydroD_results[ii + 11].split()[5])
                 else:
-                    self.meta_centric_height_longitudinal = float(hydroD_results[ii + 11].split()[4].replace("=", ""))
+                    self.CFM[1] = float(hydroD_results[ii + 11].split()[4].replace("=", ""))
+                if hydroD_results[ii + 12].split()[4] == "=":
+                    self.CFM[2] = float(hydroD_results[ii + 12].split()[5])
+                else:
+                    self.CFM[2] = float(hydroD_results[ii + 12].split()[4].replace("=", ""))
+
+        if fixed == 0:
+            ii = 1
+            found = 0
+            while found == 0:
+                k = hydroD_results[ii].find(' 4.2 STATIC  RESULTS\n')
+                ii += 1
+                if k != -1:
+                    found = 1
+                    M1 = np.float_(hydroD_results[ii + 8].split()[1:7])
+                    M2 = np.float_(hydroD_results[ii + 9].split()[1:7])
+                    M3 = np.float_(hydroD_results[ii + 10].split()[1:7])
+                    M4 = np.float_(hydroD_results[ii + 11].split()[1:7])
+                    M5 = np.float_(hydroD_results[ii + 12].split()[1:7])
+                    M6 = np.float_(hydroD_results[ii + 13].split()[1:7])
+                    self.mass_matrix = np.array([M1, M2, M3, M4, M5, M6])
+
+                    K1 = np.float_(hydroD_results[ii + 20].split()[1:7])
+                    K2 = np.float_(hydroD_results[ii + 21].split()[1:7])
+                    K3 = np.float_(hydroD_results[ii + 22].split()[1:7])
+                    K4 = np.float_(hydroD_results[ii + 23].split()[1:7])
+                    K5 = np.float_(hydroD_results[ii + 24].split()[1:7])
+                    K6 = np.float_(hydroD_results[ii + 25].split()[1:7])
+                    self.stiffness_matrix = np.array([K1, K2, K3, K4, K5, K6])
+
+            ii = 1
+            found = 0
+
+            self.COB = np.zeros(3)
+
+            while found == 0:
+                k = hydroD_results[ii].find('     HYDROSTATIC DATA:\n')
+                ii += 1
+                if k != -1:
+                    found = 1
+                    self.displaced_volume = float(hydroD_results[ii + 3].split()[6])
+                    self.WPA = float(hydroD_results[ii + 5].split()[5])
+                    if hydroD_results[ii + 7].split()[4] == "=":
+                        self.COB[0] = float(hydroD_results[ii + 7].split()[5])
+                    else:
+                        self.COB[0] = float(hydroD_results[ii + 7].split()[4].replace("=", ""))
+                    if hydroD_results[ii + 8].split()[1] == "=":
+                        self.COB[1] = float(hydroD_results[ii + 8].split()[2])
+                    else:
+                        self.COB[1] = float(hydroD_results[ii + 8].split()[1].replace("=", ""))
+                    if hydroD_results[ii + 9].split()[1] == "=":
+                        self.COB[2] = float(hydroD_results[ii + 9].split()[2])
+                    else:
+                        self.COB[2] = float(hydroD_results[ii + 9].split()[1].replace("=", ""))
+
+                    if hydroD_results[ii + 10].split()[4] == "=":
+                        self.meta_centric_height_transverse = float(hydroD_results[ii + 10].split()[5])
+                    else:
+                        self.meta_centric_height_transverse = float(hydroD_results[ii + 10].split()[4].replace("=", ""))
+                    if hydroD_results[ii + 11].split()[4] == "=":
+                        self.meta_centric_height_longitudinal = float(hydroD_results[ii + 11].split()[5])
+                    else:
+                        self.meta_centric_height_longitudinal = float(hydroD_results[ii + 11].split()[4].replace("=", ""))
 
         ii = 1
         found = 0
@@ -183,10 +212,11 @@ class ReadWadamLis:
                             self.WAVEEX[mm, nn, qq, :] = np.float_(hydroD_results[ii + 4 + 2 * qq].split()[1:5])
                             self.MOTIONS[mm, nn, qq, :] = np.float_(hydroD_results[ii + 22 + 2 * qq].split()[1:5])
 
-        self.stiffness_matrix[0: 3, 0: 3] = self.stiffness_matrix[0: 3, 0: 3] * self.RO * self.VOL * self.G / self.L
-        self.stiffness_matrix[3: 6, 0: 3] = self.stiffness_matrix[3: 6, 0: 3] * self.RO * self.VOL * self.G
-        self.stiffness_matrix[0: 3, 3: 6] = self.stiffness_matrix[0: 3, 3: 6] * self.RO * self.VOL * self.G
-        self.stiffness_matrix[3: 6, 3: 6] = self.stiffness_matrix[3: 6, 3: 6] * self.RO * self.VOL * self.G * self.L
+        if fixed == 0:
+            self.stiffness_matrix[0: 3, 0: 3] = self.stiffness_matrix[0: 3, 0: 3] * self.RO * self.VOL * self.G / self.L
+            self.stiffness_matrix[3: 6, 0: 3] = self.stiffness_matrix[3: 6, 0: 3] * self.RO * self.VOL * self.G
+            self.stiffness_matrix[0: 3, 3: 6] = self.stiffness_matrix[0: 3, 3: 6] * self.RO * self.VOL * self.G
+            self.stiffness_matrix[3: 6, 3: 6] = self.stiffness_matrix[3: 6, 3: 6] * self.RO * self.VOL * self.G * self.L
 
         self.mass_matrix[0: 3, 0: 3] = self.mass_matrix[0: 3, 0: 3] * self.RO * self.VOL
         self.mass_matrix[3: 6, 0: 3] = self.mass_matrix[3: 6, 0: 3] * self.RO * self.VOL * self.L
@@ -215,15 +245,19 @@ class ReadWadamLis:
         found = 0
 
         while found == 0:
-            k = hydroD_results[ii].find(' 2.3.1 DATA SPECIFYING THE PANEL MODEL:\n')
+            k = hydroD_results[ii].find('     SUMMARY FROM THE PANEL MODEL GENERATOR FOR BODY NUMBER :   1\n')
             ii += 1
             if k != -1:
                 found = 1
-                self.num_wet_panels = int(hydroD_results[ii + 39].split()[6])
-                self.num_panels = int(hydroD_results[ii + 40].split()[10])
-                self.num_dry_panels = int(hydroD_results[ii + 41].split()[8])
+                self.num_wet_panels = int(hydroD_results[ii + 1].split()[-1])
+                # self.num_panels = int(hydroD_results[ii + 3].split()[10])
+                # self.num_dry_panels = int(hydroD_results[ii + 4].split()[8])
 
-        self.panel_pressure = np.zeros(shape=(self.numheadangles, self.numwavelengths, 2 * self.num_wet_panels, 21))
+        if reflection == 1:
+            self.panel_pressure = np.zeros(shape=(self.numheadangles, self.numwavelengths, 2 * self.num_wet_panels, 21))
+        else:
+            self.panel_pressure = np.zeros(shape=(self.numheadangles, self.numwavelengths, self.num_wet_panels, 21))
+
         self.panel_disc = np.zeros(shape=(5, self.num_wet_panels))
 
         found = 0
@@ -301,11 +335,15 @@ class ReadWadamLis:
                                 break
 
                 found = 0
+                if int(hydroD_results[ii + 5 + jj].split()[0]) == self.num_wet_panels:
+                    found = 1
 
                 while found == 0:
                     k = hydroD_results[ii].find(
                         '    1. REFLECTION                                                                                                                  \n')
                     ii += 1
+                    if ii == len(hydroD_results) - 1:
+                        found = 1
                     if k != -1:
                         for jj in np.arange(0, 41, 1):
                             if hydroD_results[ii + 5 + jj] == '1\n':
@@ -321,7 +359,10 @@ class ReadWadamLis:
                             self.panel_pressure[aa, bb, kk, 18:21] = self.panel_pressure[aa, bb, kk, 7:10] * self.panel_pressure[
                                 aa, bb, kk, 11] * self.panel_disc[4, int(self.panel_pressure[aa, bb, kk, 0]) - 1]
                             kk += 1
+
                 found = 0
+                if int(hydroD_results[ii + 5 + jj].split()[0]) == self.num_wet_panels:
+                    found = 1
                 
                 while found == 0:
                     k = hydroD_results[ii].find(
@@ -367,4 +408,69 @@ class ReadWadamLis:
         for ii in np.arange(0, self.numheadangles, 1).astype(int):
             for jj in np.arange(0, self.numwavelengths, 1).astype(int):
                 self.right_column_force[ii, jj, :] = np.sum(self.right_column[ii, jj, :, 12:21], axis=0)
+
+        if sectional_loads == 1:
+            found = 0
+            ii = 0
+            while found == 0:
+                k = hydroD_results[ii].find('            SECTIONAL LOADS ON THE PANEL MODEL ARE CALCULATED\n')
+                ii += 1
+                if k != -1:
+                    self.numsectloads = np.int(hydroD_results[ii].split()[1])
+                    found = 1
+
+            self.stillwater_secloads = np.zeros(shape=(self.numsectloads, 6, 3))
+
+
+            found = 0
+            ii = 0
+            jj = 0
+
+            while found == 0:
+                k = hydroD_results[ii].find('       STILLWATER SECTIONAL LOADS ON THE PANEL MODEL:\n')
+                ii += 1
+                if k != -1:
+                    while jj < self.numsectloads:
+                        k = 0
+                        k = hydroD_results[ii].find('     ---------------------\n')
+                        if k != -1:
+                            for ll in np.linspace(0, 5, 6).astype(int):
+                                self.stillwater_secloads[jj, ll, :] = hydroD_results[ii + 3 + ll].split()[1:4]
+                            jj += 1
+                        ii += 1
+                    found = 1
+
+            if fixed == 0:
+                self.secloads = np.zeros(shape=(self.numheadangles, self.numwavelengths, self.numsectloads, 6, 6))
+                for nn in np.linspace(0, int(self.numwavelengths) - 1, int(self.numwavelengths)).astype(int):
+                    for mm in np.linspace(0, int(self.numheadangles) - 1, int(self.numheadangles)).astype(int):
+                        for jj in np.linspace(0, int(self.numsectloads) - 1, int(self.numsectloads)).astype(int):
+                            found = 0
+                            while found == 0:
+                                ii += 1
+                                k = hydroD_results[ii].find(
+                                    '              REAL PART       IMAGINARY PART      REAL PART       IMAGINARY PART      ABSOLUTE VALUE  PHASE (DEGREES)\n')
+                                if k != -1:
+                                    for ll in np.linspace(0, 5, 6).astype(int):
+                                        self.secloads[mm, nn, jj, ll, :] = hydroD_results[ii + 2 + ll].split()[1:7]
+                                    found = 1
+            else:
+                self.secloads = np.zeros(shape=(self.numheadangles, self.numwavelengths, self.numsectloads, 6, 4))
+                for nn in np.linspace(0, int(self.numwavelengths) - 1, int(self.numwavelengths)).astype(int):
+                    for mm in np.linspace(0, int(self.numheadangles) - 1, int(self.numheadangles)).astype(int):
+                        for jj in np.linspace(0, int(self.numsectloads) - 1, int(self.numsectloads)).astype(int):
+                            found = 0
+                            while found == 0:
+                                ii += 1
+                                k = hydroD_results[ii].find(
+                                    '              REAL PART       IMAGINARY PART      ABSOLUTE VALUE  PHASE (DEGREES)    \n')
+                                if k != -1:
+                                    for ll in np.linspace(0, 5, 6).astype(int):
+                                        self.secloads[mm, nn, jj, ll, :] = hydroD_results[ii + 2 + ll].split()[1:7]
+                                    found = 1
+
+            self.secloads[:, :, :, 0:3, :] *= self.RO*self.VOL*self.G*(self.WA/self.L)
+            self.secloads[:, :, :, 3:6, :] *= self.RO * self.VOL * self.G * self.WA
+            self.stillwater_secloads[:, 0:3, :] *= self.RO * self.VOL * self.G * (self.WA / self.L)
+            self.stillwater_secloads[:, 3:6, :] *= self.RO * self.VOL * self.G * self.WA
 

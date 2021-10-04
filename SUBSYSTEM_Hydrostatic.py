@@ -7,7 +7,7 @@ from Buoy import Buoy
 from Mass import Mass
 from Density import Density
 from Area import Area
-from GeneralisedCoordinateSystem import GeneralisedCoordinateSystem
+from GlobalCoordinateSystem import GlobalCoordinateSystem
 from SystemMatrices import MatrixCalculation
 from ComputeHydroCoefficients import CompHydroCoefficient
 from plot_hydroD_results import plot_hydroD_results
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     csa = Area(mufp)
     buoy = Buoy(mufp, csa, rho)
     mass = Mass(mufp, csa, buoy, rho)
-    coord = GeneralisedCoordinateSystem(mufp, csa, mass, rho, buoy, env)
+    coord = GlobalCoordinateSystem(mufp, csa, mass, rho, buoy, env)
     hydrod_results = CompHydroCoefficient(coord, mass, mufp, run)
     sim = ReadWadamLis(hydrod_results.HydroD_result)
     matrix = MatrixCalculation(coord, mass, mufp, rho, env, csa, buoy)

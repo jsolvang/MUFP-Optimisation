@@ -15,7 +15,7 @@ def sub_plots(x, y, y_lab, plot, y_lim, sci):
             axs[ii].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
         axs[ii].set(xlabel='Frequency, [rad/s]', ylabel=y_lab[jj])
         axs[ii].legend(loc="upper right")
-        axs[ii].set(xlim=(0, 2))
+        axs[ii].set(xlim=(0, 5))
         if y_lim != [0,0]:
             axs[ii].set(ylim=y_lim)
     plt.tight_layout()

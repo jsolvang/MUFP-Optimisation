@@ -3,7 +3,7 @@ import numpy as np
 
 
 class FloaterParameters:
-    def __init__(self, x, y, dia):
+    def __init__(self, x, y, dia, draft):
         # Free Variables
         self.x_space = x
         self.y_space = y
@@ -16,12 +16,10 @@ class FloaterParameters:
         # Fixed variables
         self.hub_height = 85
         self.hub_space = 142.1
-        self.draft = 14
-        self.height = 25
+        self.draft = draft
+        self.free_board = 11
+        self.height = self.draft + self.free_board
         self.thickness = 0.07
-
-
-        self.free_board = self.height - self.draft
         self.column_height = self.height - self.heave_height
 
 

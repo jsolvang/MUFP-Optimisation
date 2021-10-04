@@ -30,7 +30,9 @@ class CompHydroCoefficient:
             lines = file.readlines()
         with open(self.GeniE_JScommand, 'w') as file:
             for kk in range(len(lines)):
-                if kk == 10:
+                if kk == 8:
+                    file.write("Draft = %fm; // Floater draft \n" % floater.draft)
+                elif kk == 10:
                     file.write("Diameter2 = %fm; // side column diameter\n" % floater.dia_column)
                 elif kk == 19:
                     file.write("x2 = %fm; 	// center-center x distance for side column \n" % floater.x_space)

@@ -15,8 +15,8 @@ class MatrixCalculation:
         self.mass[3, 3] = mass.total * np.square(coord.RoG[0])
         self.mass[4, 4] = mass.total * np.square(coord.RoG[1])
         self.mass[5, 5] = mass.total * np.square(coord.RoG[2])
-        self.mass[3, 5] = -mass.total * np.square(coord.PoI[1])
-        self.mass[5, 3] = -mass.total * np.square(coord.PoI[1])
+        self.mass[3, 5] = -mass.total * coord.PoI[1]
+        self.mass[5, 3] = -mass.total * coord.PoI[1]
         self.mass[0, 4] = mass.total * coord.COM[2]
         self.mass[4, 0] = mass.total * coord.COM[2]
         self.mass[1, 3] = -mass.total * coord.COM[2]
@@ -81,3 +81,8 @@ class MatrixCalculation:
         self.stiffness[2, 2] = rho.water * 3 * area.column * env.g
         self.stiffness[3, 3] = rho.water * env.g * buoy.displaced_volume * KM_44
         self.stiffness[4, 4] = rho.water * env.g * buoy.displaced_volume * KM_55
+
+        if self.stiffness[3, 3] < 5e6:
+            self.stiffness[3, 3] = 1e6 - 5e5*((60 - floater.y_space)/30)
+        if self.stiffness[4, 4] < 1e7:
+            self.stiffness[4, 4] = 1e7 - 5e6*((60 - floater.x_space)/30)

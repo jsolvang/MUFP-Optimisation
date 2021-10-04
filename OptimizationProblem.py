@@ -8,7 +8,7 @@ from Buoy import Buoy
 from Mass import Mass
 from Density import Density
 from Area import Area
-from GeneralisedCoordinateSystem import GeneralisedCoordinateSystem
+from GlobalCoordinateSystem import GlobalCoordinateSystem
 from SystemMatrices import MatrixCalculation
 from CheckInterpolation import InterpolateParameters
 from WindForceSpectrum import WindForceSpectrum
@@ -28,7 +28,7 @@ def OptimizationProblem(x_space, y_space, dia_column):
     csa = Area(mufp)
     buoy = Buoy(mufp, csa, rho)
     mass = Mass(mufp, csa, buoy, rho)
-    coord = GeneralisedCoordinateSystem(mufp, csa, mass, rho, buoy, env)
+    coord = GlobalCoordinateSystem(mufp, csa, mass, rho, buoy, env)
     matrix = MatrixCalculation(coord, mass, mufp, rho, env, csa, buoy)
     # Adding artificial stiffness in DOF without any
     matrix.stiffness[0, 0] = 1e6

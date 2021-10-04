@@ -10,7 +10,7 @@ from scipy.signal import find_peaks
 
 
 def spectrum_response(RAO, s):
-    response = np.zeros(shape=(len(RAO[:,0,0]), len(s), 8))
+    response = np.zeros(shape=(len(RAO[:,0,0]), len(s), len(RAO[0,0,:])))
     for jj in np.linspace(0, len(RAO[:,0,0])-1, len(RAO[:,0,0])).astype(int):
         for ii in np.linspace(0, len(RAO[1, 1, :]) - 1, len(RAO[1, 1, :])).astype(int):
             response[jj, :, ii] = np.square(np.absolute(RAO[jj, :, ii])) * s[:, ii]
@@ -51,7 +51,10 @@ def spectrum_response_statistics(Tr, response, f, df_rad):
             Tz[jj, DOF[ii]] = 2 * np.pi * np.sqrt(np.divide(m0[jj, DOF[ii]], m2[jj, DOF[ii]]))
             Significant_Amplitude[jj, DOF[ii]] = 2 * np.sqrt(m0[jj, DOF[ii]])
             N_mpm[jj, DOF[ii]] = np.divide(Tr, Tz[jj, DOF[ii]])
-            MPM[jj, DOF[ii]] = np.sqrt(2 * m0[jj, DOF[ii]] * np.log(N_mpm[jj, DOF[ii]]))
+            if N_mpm[jj, DOF[ii]] <= 1:
+                MPM[jj, DOF[ii]] = Significant_Amplitude[jj, DOF[ii]]
+            else:
+                MPM[jj, DOF[ii]] = np.sqrt(2 * m0[jj, DOF[ii]] * np.log(N_mpm[jj, DOF[ii]]))
 
     return Tz, Significant_Amplitude, N_mpm, MPM, m0, m1, m2
 

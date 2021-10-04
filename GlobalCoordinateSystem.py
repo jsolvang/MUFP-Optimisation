@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-class GeneralisedCoordinateSystem:
+class GlobalCoordinateSystem:
     def __init__(self, floater, area, mass, rho, buoy, env):
         self._determine_mass_coordinates(floater, area, mass, rho, buoy)
         self._determine_buoy_coordinates(floater, area, mass, rho, buoy)
@@ -37,10 +37,17 @@ class GeneralisedCoordinateSystem:
                        floater.y_space / 2 + (np.subtract(floater.hub_space / 2, floater.y_space / 2) / 2.3),
                        floater.hub_height / 2.3, mass.tower]
 
+        self.bracing_xyL = ["Left xy Bracing", -floater.x_space/2, -floater.y_space/4, 0, mass.xy_bracing]
+
+        self.bracing_xyR = ["Right xy Bracing", -floater.x_space/2, floater.y_space/4, 0, mass.xy_bracing]
+
+        self.bracing_y = ["Back xy Bracing", -floater.x_space, 0, 0, mass.y_bracing]
+
         self.unballasted_mass_df = pd.DataFrame([self.columnfront, self.columnbackL, self.columnbackR,
                                                  self.heavefront, self.heavebackL, self.heavebackR,
                                                  self.hubL, self.hubR,
-                                                 self.towerL, self.towerR])
+                                                 self.towerL, self.towerR,
+                                                 self.bracing_xyL, self.bracing_xyR, self.bracing_y])
 
         self.unballasted_mass_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
         self.unballasted_mass_df.set_index('Component', inplace=True)
@@ -84,7 +91,6 @@ class GeneralisedCoordinateSystem:
         self.COB = [x_buoy['X_average'].sum(), x_buoy['Y_average'].sum(), x_buoy['Z_average'].sum()]
 
     def _allocate_necessary_ballasting(self, floater, area, mass, rho):
-
         # Finding the required COM of the ballast to align final vertical centre of gravity (VCG) with the VCB
         ratio = mass.ballast_total / np.sum(self.unballasted_mass_df['Mass [kg]'])
         COM_length = (self.COB[0] - self.COM_unballasted[0])
@@ -93,44 +99,68 @@ class GeneralisedCoordinateSystem:
         mass.ballast_back = ((-COM_ballast * mass.ballast_total) / floater.x_space) / 2
         mass.ballast_front = mass.ballast_total - 2 * mass.ballast_back
 
-        # Calculating the required height in heave plate for front and back ballasting
-        ballast_heightF = mass.ballast_front / (area.heave * rho.concrete)
-        ballast_heightB = mass.ballast_back / (area.heave * rho.concrete)
-        self.ballast_heightF = ballast_heightF
-        self.ballast_heightB = ballast_heightB
+        if mass.ballast_back >= 0:
+            # Calculating the required height in heave plate for front and back ballasting
+            ballast_heightF = mass.ballast_front / (area.heave * rho.concrete)
+            ballast_heightB = mass.ballast_back / (area.heave * rho.concrete)
+            self.ballast_heightF = ballast_heightF
+            self.ballast_heightB = ballast_heightB
 
-        # Assigning ballast weight and COM
-        if ballast_heightF > floater.heave_height:
-            excess_ballast_front = mass.ballast_front - area.heave * floater.heave_height * rho.concrete
-            ballast_height_in_column = np.divide(excess_ballast_front, (area.column * rho.concrete))
-            z_coord = np.divide(
-                ((mass.ballast_front - excess_ballast_front) * (floater.heave_height / 2) + excess_ballast_front) * (
-                    np.divide(ballast_height_in_column, 2)), mass.ballast_back)
-            self.ballastfront = ["Front Ballast", 0, 0, -floater.draft + z_coord, mass.ballast_front]
-        else:
-            self.ballastfront = ["Front Ballast", 0, 0, -floater.draft + (ballast_heightF / 2), mass.ballast_front]
+            # Assigning ballast weight and COM
+            if ballast_heightF > floater.heave_height:
+                excess_ballast_front = mass.ballast_front - area.heave * floater.heave_height * rho.concrete
+                ballast_height_in_column = np.divide(excess_ballast_front, (area.column * rho.concrete))
+                z_coord = np.divide(
+                    ((mass.ballast_front - excess_ballast_front) * (floater.heave_height / 2) + excess_ballast_front) * (
+                        np.divide(ballast_height_in_column, 2)), mass.ballast_back)
+                self.ballastfront = ["Front Ballast", 0, 0, -floater.draft + z_coord, mass.ballast_front]
+            else:
+                self.ballastfront = ["Front Ballast", 0, 0, -floater.draft + (ballast_heightF / 2), mass.ballast_front]
 
-        if ballast_heightB > floater.heave_height:
-            excess_ballast_back = mass.ballast_back - area.heave * floater.heave_height * rho.concrete
-            ballast_height_in_column = np.divide(excess_ballast_back, (area.column * rho.concrete))
-            z_coord = np.divide(
-                ((mass.ballast_back - excess_ballast_back) * (floater.heave_height / 2) + excess_ballast_back) * (
-                    np.divide(ballast_height_in_column, 2)), mass.ballast_back)
-            self.ballastbackL = ["Back Left Ballast", -floater.x_space, -floater.y_space / 2, -floater.draft + z_coord,
-                                 mass.ballast_back]
-            self.ballastbackR = ["Back Right Ballast", -floater.x_space, floater.y_space / 2, -floater.draft + z_coord,
-                                 mass.ballast_back]
+            if ballast_heightB > floater.heave_height:
+                excess_ballast_back = mass.ballast_back - area.heave * floater.heave_height * rho.concrete
+                ballast_height_in_column = np.divide(excess_ballast_back, (area.column * rho.concrete))
+                z_coord = np.divide(
+                    ((mass.ballast_back - excess_ballast_back) * (floater.heave_height / 2) + excess_ballast_back) * (
+                        np.divide(ballast_height_in_column, 2)), mass.ballast_back)
+                self.ballastbackL = ["Back Left Ballast", -floater.x_space, -floater.y_space / 2, -floater.draft + z_coord,
+                                     mass.ballast_back]
+                self.ballastbackR = ["Back Right Ballast", -floater.x_space, floater.y_space / 2, -floater.draft + z_coord,
+                                     mass.ballast_back]
+            else:
+                self.ballastbackL = ["Back Left Ballast", -floater.x_space, -floater.y_space / 2,
+                                     -floater.draft + (ballast_heightB / 2), mass.ballast_back]
+                self.ballastbackR = ["Back Right Ballast", -floater.x_space, floater.y_space / 2,
+                                     -floater.draft + (ballast_heightB / 2), mass.ballast_back]
         else:
+            mass.ballast_back = 0
+            mass.ballast_front = mass.ballast_total
+
+            ballast_heightF = mass.ballast_front / (area.heave * rho.concrete)
+            ballast_heightB = mass.ballast_back / (area.heave * rho.concrete)
+            self.ballast_heightF = ballast_heightF
+            self.ballast_heightB = ballast_heightB
+
+            if ballast_heightF > floater.heave_height:
+                excess_ballast_front = mass.ballast_front - area.heave * floater.heave_height * rho.concrete
+                ballast_height_in_column = np.divide(excess_ballast_front, (area.column * rho.concrete))
+                z_coord = np.divide(
+                    ((mass.ballast_front - excess_ballast_front) * (floater.heave_height / 2) + excess_ballast_front) * (
+                        np.divide(ballast_height_in_column, 2)), mass.ballast_back)
+                self.ballastfront = ["Front Ballast", 0, 0, -floater.draft + z_coord, mass.ballast_front]
+            else:
+                self.ballastfront = ["Front Ballast", 0, 0, -floater.draft + (ballast_heightF / 2), mass.ballast_front]
+
             self.ballastbackL = ["Back Left Ballast", -floater.x_space, -floater.y_space / 2,
-                                 -floater.draft + (ballast_heightB / 2), mass.ballast_back]
+                                 -floater.draft, mass.ballast_back]
             self.ballastbackR = ["Back Right Ballast", -floater.x_space, floater.y_space / 2,
-                                 -floater.draft + (ballast_heightB / 2), mass.ballast_back]
+                                 -floater.draft, mass.ballast_back]
 
         # Creating final mass DataFrame including ballasting
         self.mass_df = pd.DataFrame(
             [self.ballastfront, self.ballastbackL, self.ballastbackR, self.columnfront, self.columnbackL,
              self.columnbackR, self.heavefront, self.heavebackL, self.heavebackR, self.hubL, self.hubR, self.towerL,
-             self.towerR])
+             self.towerR, self.bracing_xyL, self.bracing_xyR, self.bracing_y])
         self.mass_df.columns = ['Component', 'x', 'y', 'z', 'Mass [kg]']
         self.mass_df.set_index('Component', inplace=True)
         self.mass_df['weight_contribution'] = np.divide(self.mass_df['Mass [kg]'], np.sum(self.mass_df['Mass [kg]']))
@@ -156,12 +186,9 @@ class GeneralisedCoordinateSystem:
         self.rog_df['y'] = self.mass_df['y'] - self.COM[1]
         self.rog_df['z'] = self.mass_df['z'] - self.COM[2]
         self.rog_df['Mass [kg]'] = self.mass_df['Mass [kg]']
-        self.rog_df['I_x'] = self.rog_df['Mass [kg]'] * np.square(
-            np.sqrt(np.square(self.rog_df['x']) + np.square(self.rog_df['z'])))
-        self.rog_df['I_y'] = self.rog_df['Mass [kg]'] * np.square(
-            np.sqrt(np.square(self.rog_df['y']) + np.square(self.rog_df['z'])))
-        self.rog_df['I_z'] = self.rog_df['Mass [kg]'] * np.square(
-            np.sqrt(np.square(self.rog_df['x']) + np.square(self.rog_df['y'])))
+        self.rog_df['I_x'] = self.rog_df['Mass [kg]'] * (np.square(self.rog_df['x']) + np.square(self.rog_df['z']))
+        self.rog_df['I_y'] = self.rog_df['Mass [kg]'] * (np.square(self.rog_df['y']) + np.square(self.rog_df['z']))
+        self.rog_df['I_z'] = self.rog_df['Mass [kg]'] * (np.square(self.rog_df['x']) + np.square(self.rog_df['y']))
 
         self.RoG = [np.sqrt(np.sum(self.rog_df['I_x']) / np.sum(self.mass_df['Mass [kg]'])),
                     np.sqrt(np.sum(self.rog_df['I_y']) / np.sum(self.mass_df['Mass [kg]'])),

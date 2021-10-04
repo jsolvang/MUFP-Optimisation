@@ -201,7 +201,7 @@ def plot_hydroD_results(results, floater, env, plot_sync):
             axs3[0, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
     axs3[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
     axs3[0, 0].legend(loc="upper right")
-    axs3[0, 0].set(xlabel='Frequency, rad/s', ylabel='0 Deg Exciting Force Translation [N]')
+    axs3[0, 0].set(xlabel='Frequency, rad/s', ylabel='0 Deg Exciting Force Translation [N/m]')
     axs3[0, 0].grid(b=True, which='both', axis='both')
 
     for jj in [3,4,5]:
@@ -213,60 +213,59 @@ def plot_hydroD_results(results, floater, env, plot_sync):
             axs3[1, 0].axvline(x=xx, color='m', linestyle='--', alpha=alpha_plot, linewidth=2)
     axs3[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
     axs3[1, 0].legend(loc="upper right")
-    axs3[1, 0].set(xlabel='Frequency, rad/s', ylabel='0 Deg Exciting Force Rotation [Nm]')
+    axs3[1, 0].set(xlabel='Frequency, rad/s', ylabel='0 Deg Exciting Force Rotation [Nm/m]')
     axs3[1, 0].grid(b=True, which='both', axis='both')
 
-    for jj in [0,2]:
+    for jj in [0,1,2]:
         axs3[0, 1].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 3], '*', label=legend_F[jj], linewidth=2, markersize=5)
     # if plot_sync == 1:
         # axs[0, 1].plot(omega_list, phi_x, linestyle='-', alpha=0.3, linewidth=2)
     axs3[0, 1].legend(loc="upper right")
-    axs3[0, 1].set(xlabel='Frequency, rad/s', ylabel='0 Deg - Phase Shift - Translation [N]')
+    axs3[0, 1].set(xlabel='Frequency, rad/s', ylabel='0 Deg - Phase Shift - Translation [N/m]')
     axs3[0, 1].grid(b=True, which='both', axis='both')
 
-    for jj in [4]:
+    for jj in [3,4,5]:
         axs3[1, 1].plot(results.wave_disc[:, 4], results.WAVEEX[0, :, jj, 3], '*g', label=legend_F[jj], linewidth=2, markersize=5)
     # if plot_sync == 1:
         # axs[1, 1].plot(omega_list,phi_x, linestyle='-', alpha=0.3, linewidth=2)
     axs3[1, 1].legend(loc="upper right")
-    axs3[1, 1].set(xlabel='Frequency, rad/s', ylabel='0 Deg - Phase Shift - Rotation [Nm]')
+    axs3[1, 1].set(xlabel='Frequency, rad/s', ylabel='0 Deg - Phase Shift - Rotation [Nm/m]')
     axs3[1, 1].grid(b=True, which='both', axis='both')
 
-#
-#    fig, axs4 = plt.subplots(2, 2)
-#    for jj in [0,2]:
-#        axs4[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
-#        if plot_sync == 1:
-#            for xc in omega_y:
-#                axs4[0, 0].axvline(x=xc, linestyle='-', alpha=0.3, linewidth=2)
-#        axs4[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-#        axs4[0, 0].legend(loc="upper right")
-#        axs4[0, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force Translation [N]')
-#        axs4[0, 0].grid(b=True, which='both', axis='both')
-#
-#    for jj in [4]:
-#        axs4[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], '-g', label=legend_T[jj], linewidth=2, markersize=2)
-#        if plot_sync == 1:
-#            for xc in omega_y:
-#                axs4[1, 0].axvline(x=xc, linestyle='-', alpha=0.3, linewidth=2)
-#        axs4[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-#        axs4[1, 0].legend(loc="upper right")
-#        axs4[1, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force Rotation [N]')
-#        axs4[1, 0].grid(b=True, which='both', axis='both')
-#
-#    for jj in [0,2]:
-#        axs4[0, 1].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 3], '*', label=legend_F[jj], linewidth=2, markersize=5)
-#        # if plot_sync == 1:
-#            # axs[0, 1].plot(omega_list, phi_y, linestyle='-', alpha=0.3, linewidth=2)
-#        axs4[0, 1].legend(loc="upper right")
-#        axs4[0, 1].set(xlabel='omega, rad/s', ylabel='90 Deg - Phase Shift -  Translation [N]')
-#        axs4[0, 1].grid(b=True, which='both', axis='both')
 
-#    for jj in [4]:
-#        axs4[1, 1].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 3], '*g', label=legend_F[jj], linewidth=2, markersize=5)
-#        # if plot_sync == 1:
-#            # axs[1, 1].plot(omega_list, phi_y, linestyle='-', alpha=0.3, linewidth=2)
-#        axs4[1, 1].legend(loc="upper right")
-#        axs4[1, 1].set(xlabel='omega, rad/s', ylabel='90 Deg - Phase Shift - Rotation [N]')
-#        axs4[1, 1].grid(b=True, which='both', axis='both')
+    fig, axs4 = plt.subplots(2, 2)
+    for jj in [0,1,2]:
+        axs4[0, 0].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], label=legend_F[jj], linewidth=2, markersize=2)
+        if plot_sync == 1:
+            for xc in omega_y:
+                axs4[0, 0].axvline(x=xc, linestyle='-', alpha=0.3, linewidth=2)
+        axs4[0, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+        axs4[0, 0].legend(loc="upper right")
+        axs4[0, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force Translation [N/m]')
+        axs4[0, 0].grid(b=True, which='both', axis='both')
 
+    for jj in [3,4,5]:
+        axs4[1, 0].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 2], label=legend_T[jj], linewidth=2, markersize=2)
+        if plot_sync == 1:
+            for xc in omega_y:
+                axs4[1, 0].axvline(x=xc, linestyle='-', alpha=0.3, linewidth=2)
+        axs4[1, 0].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+        axs4[1, 0].legend(loc="upper right")
+        axs4[1, 0].set(xlabel='omega, rad/s', ylabel='90 Deg Exciting Force Rotation [N/m]')
+        axs4[1, 0].grid(b=True, which='both', axis='both')
+
+    for jj in [0,1,2]:
+        axs4[0, 1].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 3], '*', label=legend_F[jj], linewidth=2, markersize=5)
+        # if plot_sync == 1:
+            # axs[0, 1].plot(omega_list, phi_y, linestyle='-', alpha=0.3, linewidth=2)
+        axs4[0, 1].legend(loc="upper right")
+        axs4[0, 1].set(xlabel='omega, rad/s', ylabel='90 Deg - Phase Shift -  Translation [N/m]')
+        axs4[0, 1].grid(b=True, which='both', axis='both')
+
+    for jj in [3,4,5]:
+        axs4[1, 1].plot(results.wave_disc[:, 4], results.WAVEEX[1, :, jj, 3], '*', label=legend_F[jj], linewidth=2, markersize=5)
+        # if plot_sync == 1:
+            # axs[1, 1].plot(omega_list, phi_y, linestyle='-', alpha=0.3, linewidth=2)
+        axs4[1, 1].legend(loc="upper right")
+        axs4[1, 1].set(xlabel='omega, rad/s', ylabel='90 Deg - Phase Shift - Rotation [N/m]')
+        axs4[1, 1].grid(b=True, which='both', axis='both')

@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 import sys
-sys.path.append(r'C:\Users\Joar\Documents\1_Education\NTNU\OneDrive - NTNU\Thesis\Modelling\FD Model')
+sys.path.append(r'insert_function_paths')
 from FloaterParameters import FloaterParameters
 from Environment import Environment
 from Buoy import Buoy
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     x_space = np.arange(20,110,10)
     y_space = np.arange(20,110,10)
     column_diameter = [11,12,13,14]
-    file_loc = r'C:\Users\Joar\Documents\1_Education\NTNU\pickle_files'
+    file_loc = r'insert_path\pickle_files'
     for dd in column_diameter:
         for xx in x_space:
             for yy in y_space:

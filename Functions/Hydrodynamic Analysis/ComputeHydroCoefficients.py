@@ -11,16 +11,16 @@ class CompHydroCoefficient:
     def __init__(self, coord, mass, floater, run):
         # GeniE = self.options['GeniE_dict']
         self.GeniE_path = r"C:\Program Files\DNVGL\GeniE V7.11-07\Program\GenieR.exe"
-        self.GeniE_database = r"C:\Users/Joar/Documents/1_Education/NTNU/test.gnx"
+        self.GeniE_database = r"insert_path/test.gnx"
         self.GeniE_license = r"C:\Program Files\DNVGL\license.lic"
-        self.GeniE_JScommand = r"C:\Users\Joar\Documents\1_Education\NTNU\3_column_semisub.js"
+        self.GeniE_JScommand = r"insert_path\3_column_semisub.js"
 
         # HydroD = self.options['HydroD_dict']
         self.HydroD_path = r'C:\Program Files (x86)\DNVGL\HydroD V4.10-01\Program\HydroD.exe'
-        self.HydroD_result = r'C:\Users\Joar\Documents\1_Education\NTNU\WadamRun1'
-        self.HydroD_database = r'C:\Users/Joar/Documents/1_Education/NTNU/test.hyd'
+        self.HydroD_result = r'insert_path\WadamRun1'
+        self.HydroD_database = r'insert_path/test.hyd'
         self.HydroD_license = r'C:\Program Files\DNVGL\license.lic'
-        self.HydroD_JScommand = r'C:\Users\Joar\Documents\1_Education\NTNU\python_hyd_script_com.js'
+        self.HydroD_JScommand = r'Cinsert_path\python_hyd_script_com.js'
         self.HydroD_w = 'HydroD_w'
         self.compute(coord, mass, floater, run)
 

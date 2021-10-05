@@ -14,7 +14,7 @@ from Area import Area
 from SystemMatrices import MatrixCalculation
 from GlobalCoordinateSystem import GlobalCoordinateSystem
 
-file_loc = r'C:\Users\Joar\Documents\1_Education\NTNU'
+file_loc = r'insert_path'
 function_path = file_loc + r'\Functions'
 sys.path.append(function_path)
 
@@ -168,18 +168,10 @@ if __name__ == "__main__":
                              label='HydroD: Internal Force', s=100, facecolors='none', edgecolors='r')
             axs1[jj].plot(hydrod_loads.wave_disc[:, 4], np.real(IF_manual[sec].internal_force[headangle, :, jj]), '-*b',
                           label='Manual Calculation: Internal Force', linewidth=3)
-            # if jj < 3:
-            #    axs1[jj].plot(hydrod_loads.wave_disc[:,4], np.real(RAO[sec, 2, :, jj]) *IF_manual[sec].mass_column, 'b', label='Acceleration')
-            #    axs1[jj].plot(hydrod_loads.wave_disc[:,4], -np.real(IF_manual[sec].force_column[0, :, jj]), 'g', label='Pressure Panels')
-            # else:
-            #    axs1[jj].plot(hydrod_loads.wave_disc[:,4], np.real(RAO[sec,headangle, 2, :, jj]) * IF_manual[sec].mass_matrix[jj,jj], 'b', label='Acceleration')
-            #    axs1[jj].plot(hydrod_loads.wave_disc[:,4], -np.real(IF_manual[sec].rot_force_column[0, :, jj-3]), 'g', label='Pressure Panels')
-            # axs1[jj].plot(hydrod_loads.wave_disc[:,4], np.real(RAO[sec,0, :, jj])*IF_manual[sec].stiffness_matrix[jj,jj], 'r', label='Stiffness')
             axs1[jj].set(ylabel=y_lab[jj])
             axs1[jj].set(xlim=(0, 4))
             axs1[2].set(xlabel=('Frequency [rad/s]'))
             axs1[jj].ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-        # plt.figlegend(['Manual Calculation','Inertial Load','$\sum$ Pressure Panels','Stiffness', 'HydroD: Internal Force'], bbox_to_anchor=(.82, .77))
         plt.figlegend(['HydroD - Sectional Loads', 'Internal Force Calculation'], bbox_to_anchor=(0.95, 0.97))
         axs1[0].set(ylim=(-1e6, 1e6))
         axs1[1].set(ylim=(-5e6, 5e6))

@@ -2,7 +2,7 @@ import struct
 import numpy as np
 
 # Path + file name
-path = r"C:\Users\Joar\Documents\1_Education\NTNU\OneDrive - NTNU\Thesis\Modelling\SIMA\FixedRotor5MW\Initial\151-20210417101939"
+path = r"insert_results_file"
 # Total simulation time and storage time step
 simtime = 600.
 dt = 0.1
